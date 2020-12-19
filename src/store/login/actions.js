@@ -2,12 +2,12 @@
 // action login
 import { LOG_IN } from './types';
 
-export const actionLogin = (data) => async () => (dispatch) => {
-  dispatch({
+export function actionLogin(data) {
+  return (dispatch) => dispatch({
     type: LOG_IN,
     payload: data,
   });
-};
+}
 
 // try {
 //   const respone = await testAPI.post('/login', data);
