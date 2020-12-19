@@ -6,6 +6,7 @@ import React from 'react';
 import {
   Button, Col, Container, Row, Table,
 } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import './index.css';
 
 const Employee = () => (
@@ -25,10 +26,10 @@ const Employee = () => (
               <p>Dashboard</p>
             </div>
             <div>
-              <p>Nhân sự</p>
+              <Link to="/employee">Nhân sự</Link>
             </div>
             <div>
-              <p>Dự án</p>
+              <Link to="/project">Dự án</Link>
             </div>
             <div>
               <p>Báo cáo</p>
