@@ -1,19 +1,19 @@
 import { GET } from './Types';
 
 const initialState = {
-  users: [],
+  employees: [],
 };
 
-const userReducer = (state = initialState, action) => {
+const employees = (state = initialState, action) => {
   switch (action.type) {
     case GET:
       return {
         ...state,
-        users: [...action.payload],
+        employees: [...action.payload],
       };
     default:
       return state;
   }
 };
 
-export default userReducer;
+export default employees;

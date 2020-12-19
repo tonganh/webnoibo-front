@@ -6,6 +6,7 @@ import React from 'react';
 import {
   Button, Col, Container, Row, Table,
 } from 'react-bootstrap';
+// eslint-disable-next-line import/no-unresolved
 import { Link } from 'react-router-dom';
 import './index.css';
 
@@ -40,11 +41,13 @@ const Employee = () => (
             <Button className="buttonDashBoard">Thêm mới</Button>
             <Table>
               <thead>
-                <th>Tên</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Ngày sinh</th>
-                <th>Hành động</th>
+                <tr>
+                  <th>Tên</th>
+                  <th>Email</th>
+                  <th>Số điện thoại</th>
+                  <th>Ngày sinh</th>
+                  <th>Hành động</th>
+                </tr>
               </thead>
             </Table>
           </Col>

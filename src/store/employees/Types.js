@@ -1,2 +1,2 @@
 /* eslint-disable import/prefer-default-export */
-export const GET = 'GET';
+export const GET = 'EMPLOYEES_GET_ALL';

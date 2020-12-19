@@ -1,28 +1,36 @@
-/* eslint-disable import/named */
 /* eslint-disable import/order */
-/* eslint-disable import/extensions */
-/* eslint-disable linebreak-style */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable linebreak-style */
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import ProTypes from 'prop-types';
 import testAPI from '../../untils/api';
 import './index.css';
+// eslint-disable-next-line import/no-unresolved
 import { connect } from 'react-redux';
-import { getAllUsers } from '../../store/employees/Action';
+// import { Formik } from 'formik';
+// eslint-disable-next-line import/no-unresolved
 import { useHistory } from 'react-router-dom';
+import { getEmployeesList } from '../../store/employees/Action';
+
+const qs = require('querystring');
 // import { Form } from 'react-bootstrap';
 
 /* eslint-disable react/react-in-jsx-scope */
-const Login = (props) => {
+const initialState = {
+  email: '',
+  password: '',
+};
+const Login = () => {
   const history = useHistory();
+  const [userLogin, setUserLogin] = useState(initialState);
+  const handleChangeInput = (e) => {
+    const { value } = e.target;
+    setUserLogin({ ...userLogin, [e.target.name]: value });
+  };
   // eslint-disable-next-line no-unused-vars
   const clickLogin = (e) => {
     e.preventDefault();
-    testAPI.get('/employees/').then((data) => {
+    testAPI.post('/login/', qs.stringify(userLogin)).then((data) => {
       console.log(data);
-      props.getAllUsers(data.data);
     }).then(() => {
       history.push('/employee');
     });
@@ -34,15 +42,14 @@ const Login = (props) => {
         <Form className="signup-form">
           <Form.Group controlId="usernameInput">
             <Form.Label className="signup-label">
-              User name
+              Email
             </Form.Label>
-            <Form.Control className="signup-input" type="text" placeholder="Enter the user name" />
+            <Form.Control value={userLogin.email} className="signup-input" type="text" placeholder="Enter the user name" name="email" onChange={handleChangeInput} />
           </Form.Group>
           <Form.Group controlId="passwordInput">
             <Form.Label className="signup-label">Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter your password" className="signup-input" />
+            <Form.Control type="password" value={userLogin.password} placeholder="Enter your password" className="signup-input" name="password" onChange={handleChangeInput} />
           </Form.Group>
-          {/* <Link className="signup-submit" to="/project">Đăng nhập</Link> */}
           <Button className="signup-submit" onClick={clickLogin}>Đăng nhập</Button>
         </Form>
       </div>
@@ -51,12 +58,12 @@ const Login = (props) => {
 };
 
 Login.propTypes = {
-  // users: ProTypes.array.isRequired,
-  getAllUsers: ProTypes.func.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
+  getEmployeesList: ProTypes.func.isRequired,
 };
 const mapStatetoProps = (state) => ({
-  users: state.users,
+  employees: state.employees,
 });
 export default connect(mapStatetoProps, {
-  getAllUsers,
+  getEmployeesList,
 })(Login);
