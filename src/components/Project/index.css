@@ -28,19 +28,22 @@
 .row .FirstColumnInDashBoard {
   background: blue;
   font-family: Roboto;
-  font-size: 22px;
+  font-size: 25px;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
-  line-height: 1.32;
+  line-height: 2.32;
   letter-spacing: normal;
   text-align: left;
-  padding: 31px 96px 466px 59px;
-  border: solid 1px #707070;
+  border-top: solid 1px  #707070;
+  border-bottom: 0px;
   background-color: #f2f2f2;
   height: 93vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 2em;
 }
-
 .row .mainterDashBoard {
   border: solid 1px #707070;
   padding-top: 6vh;
@@ -86,4 +89,7 @@
   letter-spacing: normal;
   text-align: left;
   color: #000000;
+}
+.FirstColumnInDashBoard .linkToProject{
+  color: blue;
 }

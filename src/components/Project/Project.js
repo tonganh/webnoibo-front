@@ -33,13 +33,13 @@ const Project = (props) => {
           <Row>
             <Col xs={2} className="FirstColumnInDashBoard">
               <div>
-                <p>Dashboard</p>
+                <Link to="/">Dashboard</Link>
               </div>
               <div>
                 <Link to="/employee">Nhân sự</Link>
               </div>
               <div>
-                <Link to="/project">Dự án</Link>
+                <Link to="/project" className="linkToProject">Dự án</Link>
               </div>
               <div>
                 <p>Báo cáo</p>
@@ -50,11 +50,13 @@ const Project = (props) => {
               <Button className="buttonDashBoard">Thêm mới</Button>
               <Table>
                 <thead className="thead-project text-center">
-                  <th>Tên</th>
-                  <th>Ngày bắt đầu</th>
-                  <th>Ngày hoàn thành</th>
-                  <th>Trạng thái</th>
-                  <th>Hành động</th>
+                  <tr>
+                    <th>Tên</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày hoàn thành</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {Projects.length > 0 ? (
@@ -68,7 +70,11 @@ const Project = (props) => {
                       </tr>
                     ))
                   ) : (
-                    <p>End</p>
+                    <tr>
+                      <th>
+                        End
+                      </th>
+                    </tr>
                   ) }
                 </tbody>
               </Table>
