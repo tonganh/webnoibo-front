@@ -1,5 +1,7 @@
 /* eslint-disable implicit-arrow-linebreak */
-import { AFTER_UPDATE, GET } from './Types';
+import {
+  ADD_EMPLOYEE, AFTER_UPDATE, DELETE_USER, GET,
+} from './Types';
 
 const initialState = {
   employees: [],
@@ -18,6 +20,14 @@ const employees = (state = initialState, action) => {
         employees: state.employees.map((user) =>
           (user.id === action.payload.data.id ? action.payload.data : user)),
       };
+    case ADD_EMPLOYEE: return {
+      ...state,
+      employees: state.employees.concat(action.payload.data),
+    };
+    case DELETE_USER: return {
+      ...state,
+      employees: state.employees.filter((user) => user.id !== action.payload),
+    };
     default:
       return state;
   }
