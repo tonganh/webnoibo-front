@@ -1,53 +1,85 @@
+/* Employees CSS */
+
 .dasBoardProject {
-    background: #0e17c7;
-    height: 74px;
-    display: flex;
-    align-items: center;
-  }
-  .topProject {
-    /* margin-left: 40px; */
-    font-family: Roboto;
-    font-size: 28px;
-    font-weight: bold;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.32;
-    letter-spacing: normal;
-    text-align: left;
-    color: #ffffff;
-  }
-  
-  .projectTitle {
-    background: #0e17c7;
-    height: 7vh;
-    display: flex;
-    align-items: center;
-    padding-left: 4vh;
-  }
-  
-  .row .FirstColumnInDashBoard {
-    background: blue;
-    font-family: Roboto;
-    font-size: 22px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.32;
-    letter-spacing: normal;
-    text-align: left;
-    padding: 31px 96px 466px 59px;
-    border: solid 1px #707070;
-    background-color: #f2f2f2;
-    height: 93vh;
-  }
-  
-  .row .mainterDashBoard {
-    border: solid 1px #707070;
-    padding-top: 6vh;
-    padding-left: 4vw;
-  }
-  .buttonDashBoard {
-    margin-bottom: 5vh;
-    margin-top: 3vh;
-  }
-  
+  background: #0e17c7;
+  height: 74px;
+  display: flex;
+  align-items: center;
+}
+.topProject {
+  /* margin-left: 40px; */
+  font-family: "Fjalla One", sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.32;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ffffff;
+}
+.test {
+  position: fixed;
+}
+.projectTitle {
+  background: #0e17c7;
+  height: 7vh;
+  display: flex;
+  align-items: center;
+  padding-left: 4vh;
+}
+
+.row .FirstColumnInDashBoard {
+  background: blue;
+  font-family: "Fjalla One", sans-serif;
+  font-size: 25px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2.32;
+  letter-spacing: normal;
+  text-align: left;
+  border-top: solid 1px #707070;
+  border-bottom: 0px;
+  background-color: #f2f2f2;
+  height: 93vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 2em;
+}
+
+.row .mainterDashBoard {
+  border: solid 1px #707070;
+  padding-top: 6vh;
+  padding-left: 4vw;
+}
+.mainterDashBoard .buttonDashBoard {
+  margin-bottom: 5vh;
+  margin-top: 3vh;
+  font-size: 3rem;
+}
+.FirstColumnInDashBoard .link-Employees {
+  color: blue;
+}
+.edit-Employee {
+  margin-right: 10px;
+}
+.row-header {
+  font-size: 20px;
+}
+
+.row-header ._button-edit {
+  margin-right: 2em;
+  font-size: 25px;
+}
+.row-header ._button-delete {
+  font-size: 25px;
+}
+.input-group .input-search {
+  padding: 2rem;
+  font-size: 1.5rem;
+}
+.input-group .button-search {
+  width: 7rem;
+}

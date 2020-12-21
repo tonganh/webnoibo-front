@@ -3,29 +3,19 @@
 import { GET } from './Types';
 
 const initialState = {
-  projects: [
-    {
-      id: 0, name: 'Du an 1', start: '12-10-2020', finishDate: '20-10-2020', state: 'Hoan thanh', hanhDong: 'lala',
-    },
-    {
-      id: 1, name: 'Du an 1', start: '12-10-2020', finishDate: '20-10-2020', state: 'Hoan thanh', hanhDong: 'lala',
-    }, {
-      id: 2, name: 'Du an 1', start: '12-10-2020', finishDate: '20-10-2020', state: 'Hoan thanh', hanhDong: 'lala',
-    }, {
-      id: 3, name: 'Du an 1', start: '12-10-2020', finishDate: '20-10-2020', state: 'Hoan thanh', hanhDong: 'lala',
-    },
-  ],
+  projects: [],
 };
 
-const reducer = (state = initialState, action) => {
+const projectReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET:
       return {
         ...state,
+        projects: [...action.payload],
       };
     default:
       return state;
   }
 };
 
-export default reducer;
+export default projectReducer;
