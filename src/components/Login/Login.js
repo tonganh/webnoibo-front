@@ -14,22 +14,33 @@ import * as EmailValidator from 'email-validator';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { getEmployeesList } from '../../store/employees/Action';
-import { actionLogin } from '../../store/login/Actions';
+import { actionLogin } from '../../store/login/actions';
 
 const qs = require('querystring');
 // import { Form } from 'react-bootstrap';
 
 /* eslint-disable react/react-in-jsx-scope */
-const initialState = {
-  email: '',
-  password: '',
-};
+
 const Login = (propsLogin) => {
   const history = useHistory();
-  const [userLogin, setUserLogin] = useState(initialState);
   // eslint-disable-next-line no-unused-vars
   const [notiState, setNotiState] = useState('');
   const [modalState, setModalState] = useState(false);
+  const dataLocal = {
+    email: localStorage.getItem('email'),
+    password: localStorage.getItem('password'),
+  };
+  if (localStorage.getItem('email') !== ''
+    && localStorage.getItem('password') !== '') {
+    testAPI.post('/login/', qs.stringify(dataLocal)).then((data) => {
+      if (data.data.message !== 'Cannot find user in db' || data.data !== 'Password wrong.') {
+        propsLogin.actionLogin(data.data);
+        history.push('/employee');
+      }
+    }).catch((err) => {
+      console.log('err', err);
+    });
+  }
   // eslint-disable-next-line no-unused-vars
   return (
     <Formik
@@ -46,6 +57,8 @@ const Login = (propsLogin) => {
             setModalState(true);
           } else {
             propsLogin.actionLogin(data.data);
+            localStorage.setItem('email', values.email);
+            localStorage.setItem('password', values.password);
             history.push('/employee');
           }
         }).catch((err) => {
@@ -95,7 +108,7 @@ const Login = (propsLogin) => {
                     </Form.Label>
                     <Form.Control onBlur={handleBlur} value={values.email} className={errors.email && touched.email && 'error'} type="text" placeholder="Enter the user name" name="email" onChange={handleChange} />
                     {errors.email && touched.email && (
-                    <div className="input-feedback">{errors.email}</div>
+                      <div className="input-feedback">{errors.email}</div>
                     )}
 
                   </Form.Group>
@@ -103,7 +116,7 @@ const Login = (propsLogin) => {
                     <Form.Label className="signup-label">Password</Form.Label>
                     <Form.Control type="password" onBlur={handleBlur} value={values.password} placeholder="Enter your password" className={errors.password && touched.password && 'error'} name="password" onChange={handleChange} />
                     {errors.password && touched.password && (
-                    <div className="input-feedback">{errors.password}</div>
+                      <div className="input-feedback">{errors.password}</div>
                     )}
                   </Form.Group>
                   <Button className="signup-submit" type="submit">Đăng nhập</Button>

@@ -61,16 +61,20 @@ const Employee = (propsEmployee) => {
       testAPI.get('/employees/').then((data) => {
         // eslint-disable-next-line no-unused-expressions
         propsEmployee.getEmployeesList(data.data);
-        setSearchState(data.data);
+        // setSearchState(data.data);
       });
     }
   }, []);
   useEffect(() => {
     const results = Employees.filter((user) => xoa_dau(user.name)
-      .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase()));
-    console.log('result', results);
+      .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase())
+      || xoa_dau(user.email)
+        .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase()));
     setSearchState(results);
   }, [searchTerm]);
+  useEffect(() => {
+    setSearchState(propsEmployee.employees.employees);
+  }, [propsEmployee.employees.employees]);
   return (
     <Formik
       initialValues={{ email: '', password: '', name: '' }}
@@ -245,7 +249,7 @@ const Employee = (propsEmployee) => {
                                   Thêm mới
                                 </Button> */}
                         <thead>
-                          <tr className="row-header">
+                          <tr className="row-header" id={0}>
                             <th>Tên</th>
                             <th>Email</th>
                             <th>Số điện thoại</th>
@@ -258,8 +262,8 @@ const Employee = (propsEmployee) => {
                             searchState.length > 0 ? (
                               searchState.map((data, index) => (
                                 <tr id={index} className="row-header">
-                                  <td>{data.name}</td>
-                                  <td>{data.email}</td>
+                                  <td>{data.name || ''}</td>
+                                  <td>{data.email || ''}</td>
                                   <td>123</td>
                                   <td>123</td>
                                   <td>
