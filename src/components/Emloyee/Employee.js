@@ -77,7 +77,9 @@ const Employee = (propsEmployee) => {
   }, [propsEmployee.employees.employees]);
   return (
     <Formik
-      initialValues={{ email: '', password: '', name: '' }}
+      initialValues={{
+        email: '', password: '', name: '', sinhnhat: '', dienthoai: '',
+      }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
         testAPI.post(`/employees/${values.id}`, qs.stringify(values)).then((data) => {
@@ -110,6 +112,11 @@ const Employee = (propsEmployee) => {
           errors.password = 'Required';
         } else if (values.password.length < 8) {
           errors.password = 'Password must be 8 characters long.';
+        }
+        if (!values.dienthoai) {
+          errors.dienthoai = 'Required';
+        } else if (values.dienthoai.length < 9) {
+          errors.dienthoai = 'Phone number must be 8 characters long.';
         }
         return errors;
       }}
@@ -264,8 +271,8 @@ const Employee = (propsEmployee) => {
                                 <tr id={index} className="row-header">
                                   <td>{data.name || ''}</td>
                                   <td>{data.email || ''}</td>
-                                  <td>123</td>
-                                  <td>123</td>
+                                  <td>{data.dienthoai}</td>
+                                  <td>{data.sinhnhat}</td>
                                   <td>
                                     <Button
                                       className="_button-edit"
@@ -375,6 +382,35 @@ const Employee = (propsEmployee) => {
                       <div className="input-feedback">{errors.email}</div>
                     )}
                   </Form.Group>
+                  <Form.Group>
+                    <Form.Label htmlFor="email">Ngày sinh</Form.Label>
+                    <Form.Control
+                      id="date"
+                      name="sinhnhat"
+                      type="date"
+                      value={values.sinhnhat}
+                      onChange={prop.handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label htmlFor="dienthoai">dienthoai</Form.Label>
+                    <Form.Control
+                      id="dienthoai"
+                      name="dienthoai"
+                      type="text"
+                      placeholder="Enter dienthoai"
+                      value={values.dienthoai}
+                      onChange={prop.handleChange}
+                      onBlur={handleBlur}
+                      className={
+                        errors.dienthoai && touched.dienthoai && 'error'
+                      }
+                    />
+                    {errors.dienthoai && touched.dienthoai && (
+                    <div className="input-feedback">{errors.dienthoai}</div>
+                    )}
+                  </Form.Group>
                 </Form>
               </Modal.Body>
               <Modal.Footer>
@@ -461,6 +497,55 @@ const Employee = (propsEmployee) => {
                     />
                     {errors.email && touched.email && (
                       <div className="input-feedback">{errors.email}</div>
+                    )}
+                  </Form.Group>
+                  {/* Date */}
+                  <Form.Group>
+                    <Form.Label htmlFor="email">Ngày sinh</Form.Label>
+                    <Form.Control
+                      id="date"
+                      name="sinhnhat"
+                      type="date"
+                      value={values.sinhnhat}
+                      onChange={prop.handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </Form.Group>
+                  {/* Dien thoai */}
+                  {/* <Form.Group>
+                    <Form.Label htmlFor="dienthoai">Điện thoại</Form.Label>
+                    <Form.Control
+                      id="dienthoai"
+                      name="dienthoai"
+                      type="text"
+                      placeholder="Nhập số điện thoại "
+                      value={values.dienthoai}
+                      onChange={prop.handleChange}
+                      onBlur={handleBlur}
+                      className={
+                        errors.dienthoai && touched.dienthoai && 'error'
+                      }
+                    />
+                    {errors.dienthoai && touched.dienthoai && (
+                      <div className="input-feedback">{errors.dienthoai}</div>
+                    )}
+                  </Form.Group> */}
+                  <Form.Group>
+                    <Form.Label htmlFor="dienthoai">dienthoai</Form.Label>
+                    <Form.Control
+                      id="dienthoai"
+                      name="dienthoai"
+                      type="text"
+                      placeholder="Enter dienthoai"
+                      value={values.dienthoai}
+                      onChange={prop.handleChange}
+                      onBlur={handleBlur}
+                      className={
+                        errors.dienthoai && touched.dienthoai && 'error'
+                      }
+                    />
+                    {errors.dienthoai && touched.dienthoai && (
+                    <div className="input-feedback">{errors.dienthoai}</div>
                     )}
                   </Form.Group>
                 </Form>
