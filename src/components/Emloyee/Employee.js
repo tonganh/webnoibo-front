@@ -11,7 +11,7 @@ import {
   Button, Col, Container, Form, FormControl, InputGroup, Modal, Row, Table,
 } from 'react-bootstrap';
 // eslint-disable-next-line import/no-unresolved
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import ProTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
@@ -28,7 +28,6 @@ const qs = require('querystring');
 const Employee = (propsEmployee) => {
   const Employees = propsEmployee.employees.employees;
   // console.log(propsEmployee.userLogin);
-  const [updateState, setUpdateState] = useState({});
   const [searchState, setSearchState] = useState([]);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalState, setModalState] = useState(false);
@@ -36,6 +35,7 @@ const Employee = (propsEmployee) => {
   const [createModal, setCreateModal] = useState('');
   const [deleteModal, setDeleteModal] = useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const history = useHistory();
   const xoa_dau = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
@@ -53,6 +53,13 @@ const Employee = (propsEmployee) => {
     str = str.replace(/Đ/g, 'D');
     return str;
   };
+  const format = (str) => {
+    const s2 = str.split('-');
+    return `${s2[2]}-${s2[1]}-${s2[0]}`;
+  };
+  if (Object.keys(Employees).length === 0) {
+    history.push('/');
+  }
   const handleChangeSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -65,6 +72,7 @@ const Employee = (propsEmployee) => {
       });
     }
   }, []);
+
   useEffect(() => {
     const results = Employees.filter((user) => xoa_dau(user.name)
       .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase())
@@ -83,14 +91,12 @@ const Employee = (propsEmployee) => {
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
         testAPI.post(`/employees/${values.id}`, qs.stringify(values)).then((data) => {
-          console.log('data', data);
           if (data.data.message === 'Email da ton tai.') {
             setNotiState('Dang nhap that bai.');
             setModalState(true);
           } else {
             setModalEdit(false);
             setNotiState('Thanh cong');
-            console.log('data', data.data);
             propsEmployee.updateEmployeeList(data.data);
           }
         }).catch((err) => {
@@ -137,6 +143,13 @@ const Employee = (propsEmployee) => {
           handleBlur,
           handleSubmit,
         } = prop;
+        function resetState() {
+          values.email = '';
+          values.name = '';
+          values.sinhnhat = '';
+          values.password = '';
+          values.dienthoai = '';
+        }
         const createClick = (e) => {
           e.preventDefault();
           testAPI.post('/employees/register', qs.stringify(values)).then((data) => {
@@ -155,7 +168,6 @@ const Employee = (propsEmployee) => {
         const conFirmDelte = () => {
           // e.preventDefault();
           testAPI.post(`employees/deleteUser/${values.id}`).then((data) => {
-            console.log('data', data);
             if (data.data.message === 'successfull') {
               propsEmployee.deleteUser(values.id);
               setDeleteModal(false);
@@ -164,13 +176,11 @@ const Employee = (propsEmployee) => {
         };
         const closeCreateModal = () => {
           setCreateModal(false);
-          values.email = '';
-          values.password = '';
-          values.name = '';
         };
         const closeDeleteModal = () => {
           setDeleteModal(false);
         };
+
         return (
           <>
             <div className="EmployeePage">
@@ -244,17 +254,6 @@ const Employee = (propsEmployee) => {
                           ) : (<p />)
                       }
                       <Table>
-                        {/* <Button
-                                  className="buttonDashBoard"
-                                  onClick={() => {
-                                    setCreateModal(true);
-                                    values.email = '';
-                                    values.password = '';
-                                    values.name = '';
-                                  }}
-                                >
-                                  Thêm mới
-                                </Button> */}
                         <thead>
                           <tr className="row-header" id={0}>
                             <th>Tên</th>
@@ -272,13 +271,14 @@ const Employee = (propsEmployee) => {
                                   <td>{data.name || ''}</td>
                                   <td>{data.email || ''}</td>
                                   <td>{data.dienthoai}</td>
-                                  <td>{data.sinhnhat}</td>
+                                  <td>{format(data.sinhnhat)}</td>
                                   <td>
                                     <Button
                                       className="_button-edit"
                                       onClick={() => {
                                         Object.assign(values, Employees[index]);
                                         setModalEdit(true);
+                                        resetState();
                                       }}
                                     >
                                       Sửa
@@ -313,9 +313,6 @@ const Employee = (propsEmployee) => {
               show={modalEdit}
               onHide={() => {
                 setModalEdit(false);
-                values.email = '';
-                values.password = '';
-                values.name = '';
               }}
               aria-labelledby="contained-modal-title-vcenter"
               centered
@@ -332,7 +329,7 @@ const Employee = (propsEmployee) => {
                       id="name"
                       name="name"
                       type="text"
-                      placeholder="Enter name"
+                      placeholder="Nhập tên"
                       value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -346,12 +343,12 @@ const Employee = (propsEmployee) => {
                   </Form.Group>
                   {/* Password */}
                   <Form.Group>
-                    <Form.Label htmlFor="password">Password </Form.Label>
+                    <Form.Label htmlFor="password">Mật khẩu </Form.Label>
                     <Form.Control
                       id="password"
                       name="password"
                       type="text"
-                      placeholder="Enter password"
+                      placeholder="Nhập mật khẩu"
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -370,7 +367,7 @@ const Employee = (propsEmployee) => {
                       id="email"
                       name="email"
                       type="text"
-                      placeholder="Enter email"
+                      placeholder="Nhập email"
                       value={values.email}
                       onChange={prop.handleChange}
                       onBlur={handleBlur}
@@ -394,12 +391,12 @@ const Employee = (propsEmployee) => {
                     />
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label htmlFor="dienthoai">dienthoai</Form.Label>
+                    <Form.Label htmlFor="dienthoai">Điện thoại</Form.Label>
                     <Form.Control
                       id="dienthoai"
                       name="dienthoai"
                       type="text"
-                      placeholder="Enter dienthoai"
+                      placeholder="Nhập số điện thoại"
                       value={values.dienthoai}
                       onChange={prop.handleChange}
                       onBlur={handleBlur}
@@ -438,18 +435,18 @@ const Employee = (propsEmployee) => {
               centered
             >
               <Modal.Header closeButton>
-                <Modal.Title>Create</Modal.Title>
+                <Modal.Title>Tạo</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Form noValidate>
                   {/* Name */}
                   <Form.Group>
-                    <Form.Label htmlFor="password">Name</Form.Label>
+                    <Form.Label htmlFor="name">Mật khẩu</Form.Label>
                     <Form.Control
                       id="name"
                       name="name"
                       type="text"
-                      placeholder="Enter name"
+                      placeholder="Nhập tên"
                       value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -463,12 +460,12 @@ const Employee = (propsEmployee) => {
                   </Form.Group>
                   {/* Password */}
                   <Form.Group>
-                    <Form.Label htmlFor="password">Password </Form.Label>
+                    <Form.Label htmlFor="password">Mật khẩu </Form.Label>
                     <Form.Control
                       id="password"
                       name="password"
                       type="text"
-                      placeholder="Enter password"
+                      placeholder="Nhập mật khẩu"
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -487,7 +484,7 @@ const Employee = (propsEmployee) => {
                       id="email"
                       name="email"
                       type="text"
-                      placeholder="Enter email"
+                      placeholder="Nhập email"
                       value={values.email}
                       onChange={prop.handleChange}
                       onBlur={handleBlur}
@@ -531,12 +528,12 @@ const Employee = (propsEmployee) => {
                     )}
                   </Form.Group> */}
                   <Form.Group>
-                    <Form.Label htmlFor="dienthoai">dienthoai</Form.Label>
+                    <Form.Label htmlFor="dienthoai">Điện thoại</Form.Label>
                     <Form.Control
                       id="dienthoai"
                       name="dienthoai"
                       type="text"
-                      placeholder="Enter dienthoai"
+                      placeholder="Nhập số điện thoại"
                       value={values.dienthoai}
                       onChange={prop.handleChange}
                       onBlur={handleBlur}

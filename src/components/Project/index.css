@@ -93,3 +93,14 @@
 .FirstColumnInDashBoard .linkToProject{
   color: blue;
 }
+.danglam {
+  border-radius: 20px;
+  border: solid 1px #ba9e00;
+  background-color: #ffdb79;
+  display: flex;
+  justify-content: center;
+}
+._button-edit {
+  margin-right: 2em;
+  font-size: 25px;
+}

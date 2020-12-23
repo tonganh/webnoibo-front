@@ -48,7 +48,6 @@ const Login = (propsLogin) => {
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(false);
         testAPI.post('/login/', qs.stringify(values)).then((data) => {
-          console.log('data', data);
           if (data.data.message === 'Cannot find user in db') {
             setNotiState('Dang nhap that bai.');
             setModalState(true);
