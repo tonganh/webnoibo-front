@@ -13,7 +13,6 @@ import { Formik } from 'formik';
 import * as EmailValidator from 'email-validator';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
-import { getEmployeesList } from '../../store/employees/Action';
 import { actionLogin } from '../../store/login/actions';
 
 const qs = require('querystring');
@@ -40,6 +39,7 @@ const Login = (propsLogin) => {
     }).catch((err) => {
       console.log('err', err);
     });
+    // console.log('123');
   }
   // eslint-disable-next-line no-unused-vars
   return (
@@ -156,7 +156,6 @@ const Login = (propsLogin) => {
 
 Login.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
-  getEmployeesList: ProTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   actionLogin: ProTypes.func.isRequired,
 };
@@ -165,6 +164,5 @@ const mapStatetoProps = (state) => ({
   // loginReducer: state.loginReducer,
 });
 export default connect(mapStatetoProps, {
-  getEmployeesList,
   actionLogin,
 })(Login);

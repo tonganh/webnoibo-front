@@ -1,11 +1,16 @@
 /* eslint-disable import/prefer-default-export */
 // action login
-import { LOG_IN } from './types';
+import { LOG_IN, LOG_OUT } from './types';
 
 export function actionLogin(data) {
   return (dispatch) => dispatch({
     type: LOG_IN,
     payload: data,
+  });
+}
+export function actionLogOut() {
+  return (dispatch) => dispatch({
+    type: LOG_OUT,
   });
 }
 

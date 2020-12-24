@@ -18,6 +18,7 @@ import { Formik } from 'formik';
 import * as EmailValidator from 'email-validator';
 import * as Yup from 'yup';
 import testAPI from '../../untils/api';
+import { actionLogOut } from '../../store/login/actions';
 import {
   getEmployeesList, updateEmployeeList, addUsertoList, deleteUser,
 } from '../../store/employees/Action';
@@ -26,7 +27,7 @@ import './index.css';
 const qs = require('querystring');
 
 const Employee = (propsEmployee) => {
-  const Employees = propsEmployee.employees.employees;
+  const [Employees, setEmployees] = useState([]);
   // console.log(propsEmployee.userLogin);
   const [searchState, setSearchState] = useState([]);
   const [modalEdit, setModalEdit] = useState(false);
@@ -34,7 +35,7 @@ const Employee = (propsEmployee) => {
   const [notiState, setNotiState] = useState('');
   const [createModal, setCreateModal] = useState('');
   const [deleteModal, setDeleteModal] = useState(false);
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const history = useHistory();
   const xoa_dau = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
@@ -57,7 +58,8 @@ const Employee = (propsEmployee) => {
     const s2 = str.split('-');
     return `${s2[2]}-${s2[1]}-${s2[0]}`;
   };
-  if (Object.keys(Employees).length === 0) {
+  if (Object.keys(propsEmployee.userLogin).length === 0) {
+    console.log('state 1');
     history.push('/');
   }
   const handleChangeSearch = (event) => {
@@ -72,9 +74,12 @@ const Employee = (propsEmployee) => {
       });
     }
   }, []);
+  useEffect(() => {
+    setEmployees(propsEmployee.employees.employees);
+  }, [propsEmployee.employees.employees]);
 
   useEffect(() => {
-    const results = Employees.filter((user) => xoa_dau(user.name)
+    const results = propsEmployee.employees.employees.filter((user) => xoa_dau(user.name)
       .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase())
       || xoa_dau(user.email)
         .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase()));
@@ -189,12 +194,19 @@ const Employee = (propsEmployee) => {
                   <h1 className="hiSoftText">
                     Hisoft EMS
                   </h1>
+                  <Button onClick={() => {
+                    localStorage.clear();
+                    propsEmployee.actionLogOut();
+                  }}
+                  >
+                    Log Out
+                  </Button>
                 </div>
               </div>
               <div className="bodyDashboard">
                 <Container fluid>
                   <Row>
-                    <Col xs={2} className="FirstColumnInDashBoard">
+                    <Col md={2} xs={12} className="FirstColumnInDashBoard col-sm">
                       <div className="test">
                         <div>
                           <Link to="/employee">Dashboard</Link>
@@ -216,7 +228,7 @@ const Employee = (propsEmployee) => {
                         </div>
                       </div>
                     </Col>
-                    <Col xs={10} className="mainterDashBoard">
+                    <Col md={10} className="mainterDashBoard">
                       <h2>Danh sách nhân sự</h2>
                       {
                         propsEmployee.userLogin.role === 'AD'
@@ -253,7 +265,7 @@ const Employee = (propsEmployee) => {
                             </Row>
                           ) : (<p />)
                       }
-                      <Table>
+                      <Table responsive>
                         <thead>
                           <tr className="row-header" id={0}>
                             <th>Tên</th>
@@ -405,7 +417,7 @@ const Employee = (propsEmployee) => {
                       }
                     />
                     {errors.dienthoai && touched.dienthoai && (
-                    <div className="input-feedback">{errors.dienthoai}</div>
+                      <div className="input-feedback">{errors.dienthoai}</div>
                     )}
                   </Form.Group>
                 </Form>
@@ -542,7 +554,7 @@ const Employee = (propsEmployee) => {
                       }
                     />
                     {errors.dienthoai && touched.dienthoai && (
-                    <div className="input-feedback">{errors.dienthoai}</div>
+                      <div className="input-feedback">{errors.dienthoai}</div>
                     )}
                   </Form.Group>
                 </Form>
@@ -610,6 +622,7 @@ Employee.ProTypes = {
   userLogin: ProTypes.object.isRequired,
   addUsertoList: ProTypes.func.isRequired,
   deleteUser: ProTypes.func.isRequired,
+  actionLogOut: ProTypes.func.isRequired,
 };
 const mapStatetoProps = (state) => ({
   employees: state.employees,
@@ -620,4 +633,5 @@ export default connect(mapStatetoProps, {
   updateEmployeeList,
   addUsertoList,
   deleteUser,
+  actionLogOut,
 })(Employee);

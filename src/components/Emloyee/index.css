@@ -43,7 +43,7 @@
   border-bottom: 0px;
   background-color: #f2f2f2;
   height: 93vh;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   justify-content: center;
   padding-left: 2em;
@@ -82,4 +82,15 @@
 }
 .input-group .button-search {
   width: 7rem;
+}
+/* Tablet */
+@media only screen and (max-width: 1012px) {
+  .row .FirstColumnInDashBoard{
+    display: none;
+  }
+}
+@media only screen and (min-width: 1020px) {
+  .row .FirstColumnInDashBoard{
+    display: flex ;
+  }
 }
