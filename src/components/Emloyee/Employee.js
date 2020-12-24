@@ -70,7 +70,7 @@ const Employee = (propsEmployee) => {
       testAPI.get('/employees/').then((data) => {
         // eslint-disable-next-line no-unused-expressions
         propsEmployee.getEmployeesList(data.data);
-        // setSearchState(data.data);
+        setSearchState(data.data);
       });
     }
   }, []);
@@ -158,7 +158,8 @@ const Employee = (propsEmployee) => {
         const createClick = (e) => {
           e.preventDefault();
           testAPI.post('/employees/register', qs.stringify(values)).then((data) => {
-            if (data.message === 'User already exist.') {
+            console.log('data', data);
+            if (data.data.message === 'User already exist.') {
               setNotiState('User already exist.');
               setCreateModal(false);
               setNotiState(true);
@@ -168,7 +169,7 @@ const Employee = (propsEmployee) => {
               setCreateModal(false);
               setNotiState(true);
             }
-          }).then((err) => setNotiState(err));
+          }).catch((err) => setNotiState(err));
         };
         const conFirmDelte = () => {
           // e.preventDefault();
@@ -239,9 +240,7 @@ const Employee = (propsEmployee) => {
                                   className="buttonDashBoard"
                                   onClick={() => {
                                     setCreateModal(true);
-                                    values.email = '';
-                                    values.password = '';
-                                    values.name = '';
+                                    resetState();
                                   }}
                                 >
                                   Thêm mới
@@ -288,9 +287,8 @@ const Employee = (propsEmployee) => {
                                     <Button
                                       className="_button-edit"
                                       onClick={() => {
-                                        Object.assign(values, Employees[index]);
+                                        Object.assign(values, data);
                                         setModalEdit(true);
-                                        resetState();
                                       }}
                                     >
                                       Sửa
@@ -453,7 +451,7 @@ const Employee = (propsEmployee) => {
                 <Form noValidate>
                   {/* Name */}
                   <Form.Group>
-                    <Form.Label htmlFor="name">Mật khẩu</Form.Label>
+                    <Form.Label htmlFor="name">Tên thành viên mới:</Form.Label>
                     <Form.Control
                       id="name"
                       name="name"
@@ -472,7 +470,7 @@ const Employee = (propsEmployee) => {
                   </Form.Group>
                   {/* Password */}
                   <Form.Group>
-                    <Form.Label htmlFor="password">Mật khẩu </Form.Label>
+                    <Form.Label htmlFor="name">Mật khẩu </Form.Label>
                     <Form.Control
                       id="password"
                       name="password"
@@ -604,7 +602,6 @@ const Employee = (propsEmployee) => {
                 <Button
                   variant="secondary"
                   onClick={closeDeleteModal}
-
                 >
                   Close
                 </Button>
