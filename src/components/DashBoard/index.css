@@ -22,16 +22,19 @@
   position: fixed;
   list-style-type: none;
 }
-.projectTitle {
+.dashBoardTitle {
   background: #0e17c7;
   height: 7vh;
   display: flex;
   align-items: center;
-  padding-left: 4vh;
+  padding: 1em;
+  justify-content: space-between;
 }
-
-.row .FirstColumnInProject {
-  background: blue;
+#root ._logOut{
+  font-size: 0.5em;
+}
+.row .FirstColumnInDashBoard {
+  background-color: white;
   /* font-family: "Fjalla One", sans-serif; */
   font-size: 25px;
   font-weight: normal;
@@ -49,39 +52,33 @@
   justify-content: center;
 }
 
-.row .mainterProjects {
+.row .mainterDashBoard {
   border: solid 1px #707070;
   padding-top: 6vh;
   padding-left: 4vw;
+  background-color: white;
+  display: flex;
 }
-.table ._pj-row{
-  font-size: 2em;
-}
-.mainterProjects .buttonDashBoard {
+.mainterDashBoard .buttonDashBoard {
   margin-bottom: 5vh;
   margin-top: 3vh;
   font-size: 3rem;
 }
-.FirstColumnInProject .link-Employees {
+.FirstColumnInDashBoard .link-dashboard {
   color: blue;
 }
 .edit-Employee {
   margin-right: 10px;
 }
-.danglam {
-  border-radius: 20px;
-  border: solid 1px #ba9e00;
-  background-color: #ffdb79;
-}
-._pj-row {
+.row-header {
   font-size: 20px;
 }
 
-._pj-row ._button-edit {
+.row-header ._button-edit {
   margin-right: 2em;
   font-size: 25px;
 }
-._pj-row ._button-delete {
+.row-header ._button-delete {
   font-size: 25px;
 }
 .input-group .input-search {
@@ -91,6 +88,29 @@
 .input-group .button-search {
   width: 7rem;
 }
-.FirstColumnInProject .clickProject{
-  color:blue;
+.Rectangle-22 {
+  width: 41em;
+  height: 216px;
+  margin: 46px 69px 432px 60px;
+  border-radius: 10px;
+  border: solid 1px #707070;
+  background-color: #edeef0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fa-people-carry{
+  font-size: 12em;
+  padding-right: 0.5em;
+}
+/* Tablet */
+@media only screen and (max-width: 1012px) {
+  .row .FirstColumnInDashBoard {
+    display: none;
+  }
+}
+@media only screen and (min-width: 1020px) {
+  .row .FirstColumnInDashBoard {
+    display: flex;
+  }
 }

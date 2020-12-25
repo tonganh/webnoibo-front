@@ -13,7 +13,7 @@ import { Formik } from 'formik';
 import * as EmailValidator from 'email-validator';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
-import { actionLogin } from '../../store/login/actions';
+import { actionLogin } from '../../store/login/Actions';
 
 const qs = require('querystring');
 // import { Form } from 'react-bootstrap';
@@ -34,7 +34,7 @@ const Login = (propsLogin) => {
     testAPI.post('/login/', qs.stringify(dataLocal)).then((data) => {
       if (data.data.message !== 'Cannot find user in db' || data.data !== 'Password wrong.') {
         propsLogin.actionLogin(data.data);
-        history.push('/employee');
+        history.push('/dashboard');
       }
     }).catch((err) => {
       console.log('err', err);
@@ -58,10 +58,11 @@ const Login = (propsLogin) => {
             propsLogin.actionLogin(data.data);
             localStorage.setItem('email', values.email);
             localStorage.setItem('password', values.password);
-            history.push('/employee');
+            history.push('/dashboard');
           }
         }).catch((err) => {
-          console.log('err', err);
+          setNotiState(err.message);
+          setModalState(true);
         });
       }}
       validate={(values) => {

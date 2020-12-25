@@ -18,7 +18,7 @@ import { Formik } from 'formik';
 import * as EmailValidator from 'email-validator';
 import * as Yup from 'yup';
 import testAPI from '../../untils/api';
-import { actionLogOut } from '../../store/login/actions';
+import { actionLogOut } from '../../store/login/Actions';
 import {
   getEmployeesList, updateEmployeeList, addUsertoList, deleteUser,
 } from '../../store/employees/Action';
@@ -59,7 +59,6 @@ const Employee = (propsEmployee) => {
     return `${s2[2]}-${s2[1]}-${s2[0]}`;
   };
   if (Object.keys(propsEmployee.userLogin).length === 0) {
-    console.log('state 1');
     history.push('/');
   }
   const handleChangeSearch = (event) => {
@@ -97,7 +96,7 @@ const Employee = (propsEmployee) => {
         setSubmitting(false);
         testAPI.post(`/employees/${values.id}`, qs.stringify(values)).then((data) => {
           if (data.data.message === 'Email da ton tai.') {
-            setNotiState('Dang nhap that bai.');
+            setNotiState('Email da ton tai.');
             setModalState(true);
           } else {
             setModalEdit(false);
@@ -105,17 +104,12 @@ const Employee = (propsEmployee) => {
             propsEmployee.updateEmployeeList(data.data);
           }
         }).catch((err) => {
-          setModalEdit(false);
-          setNotiState('Loi gi do.');
+          setModalState(true);
+          setNotiState('Lỗi của server.');
         });
       }}
       validate={(values) => {
         const errors = {};
-        if (!values.email) {
-          errors.email = 'Email must required.';
-        } else if (!EmailValidator.validate(values.email)) {
-          errors.email = 'Invalid email.';
-        }
         if (!values.name) {
           errors.name = 'Name must required';
         }
@@ -123,6 +117,11 @@ const Employee = (propsEmployee) => {
           errors.password = 'Required';
         } else if (values.password.length < 8) {
           errors.password = 'Password must be 8 characters long.';
+        }
+        if (!values.email) {
+          errors.email = 'Email must required.';
+        } else if (!EmailValidator.validate(values.email)) {
+          errors.email = 'Invalid email.';
         }
         if (!values.dienthoai) {
           errors.dienthoai = 'Required';
@@ -158,18 +157,18 @@ const Employee = (propsEmployee) => {
         const createClick = (e) => {
           e.preventDefault();
           testAPI.post('/employees/register', qs.stringify(values)).then((data) => {
-            console.log('data', data);
             if (data.data.message === 'User already exist.') {
               setNotiState('User already exist.');
-              setCreateModal(false);
-              setNotiState(true);
+              // setCreateModal(false);
+              setModalState(true);
             } else {
               setNotiState('Successfull.');
               propsEmployee.addUsertoList(data.data);
               setCreateModal(false);
-              setNotiState(true);
             }
-          }).catch((err) => setNotiState(err));
+          }).catch((err) => {
+            setNotiState(err);
+          });
         };
         const conFirmDelte = () => {
           // e.preventDefault();
@@ -191,14 +190,16 @@ const Employee = (propsEmployee) => {
           <>
             <div className="EmployeePage">
               <div className="topProject">
-                <div className="projectTitle">
+                <div className="dashBoardTitle">
                   <h1 className="hiSoftText">
                     Hisoft EMS
                   </h1>
-                  <Button onClick={() => {
-                    localStorage.clear();
-                    propsEmployee.actionLogOut();
-                  }}
+                  <Button
+                    onClick={() => {
+                      localStorage.clear();
+                      propsEmployee.actionLogOut();
+                    }}
+                    className="_logOut"
                   >
                     Log Out
                   </Button>
@@ -207,35 +208,33 @@ const Employee = (propsEmployee) => {
               <div className="bodyDashboard">
                 <Container fluid>
                   <Row>
-                    <Col md={2} xs={12} className="FirstColumnInDashBoard col-sm">
-                      <div className="test">
-                        <div>
-                          <Link to="/employee">Dashboard</Link>
-                        </div>
+                    <Col md={2} xs={12} className="FirstColumnInEmployee col-sm">
+                      <ul className="test">
+                        <li>
+                          <Link to="/dashboard">Dashboard</Link>
+                        </li>
                         {
                           propsEmployee.userLogin.role === 'AD'
                             ? (
-                              <div>
+                              <li>
                                 <Link to="/employee" className="link-Employees">Nhân sự</Link>
-                              </div>
+                              </li>
                             ) : (<p />)
                         }
-
-                        <div>
+                        <li>
                           <Link to="/project">Dự án</Link>
-                        </div>
-                        <div>
-                          <p>Báo cáo</p>
-                        </div>
-                      </div>
+                        </li>
+                        <li>Báo cáo</li>
+                      </ul>
                     </Col>
-                    <Col md={10} className="mainterDashBoard">
-                      <h2>Danh sách nhân sự</h2>
-                      {
+                    <Col md={10} className="maintainEmployee">
+                      <div className="main-header">
+                        <h2>Danh sách nhân sự</h2>
+                        {
                         propsEmployee.userLogin.role === 'AD'
                           ? (
                             <Row>
-                              <Col md={4}>
+                              <Col md={6}>
                                 <Button
                                   className="buttonDashBoard"
                                   onClick={() => {
@@ -246,8 +245,8 @@ const Employee = (propsEmployee) => {
                                   Thêm mới
                                 </Button>
                               </Col>
-                              <Col md={{ span: 4, offset: 4 }} className=" m-auto">
-                                <InputGroup className="mb-3">
+                              <Col md={{ span: 6, offset: 6 }} className=" m-auto d-flex justify-content-lg-end">
+                                <InputGroup className="mb-3 search-header">
                                   <FormControl
                                     placeholder="Tìm kiếm"
                                     aria-label="Recipient's username"
@@ -264,6 +263,7 @@ const Employee = (propsEmployee) => {
                             </Row>
                           ) : (<p />)
                       }
+                      </div>
                       <Table responsive>
                         <thead>
                           <tr className="row-header" id={0}>
@@ -278,7 +278,7 @@ const Employee = (propsEmployee) => {
                           {
                             searchState.length > 0 ? (
                               searchState.map((data, index) => (
-                                <tr id={index} className="row-header">
+                                <tr id={index} className="row-employees">
                                   <td>{data.name || ''}</td>
                                   <td>{data.email || ''}</td>
                                   <td>{data.dienthoai}</td>
@@ -519,24 +519,6 @@ const Employee = (propsEmployee) => {
                     />
                   </Form.Group>
                   {/* Dien thoai */}
-                  {/* <Form.Group>
-                    <Form.Label htmlFor="dienthoai">Điện thoại</Form.Label>
-                    <Form.Control
-                      id="dienthoai"
-                      name="dienthoai"
-                      type="text"
-                      placeholder="Nhập số điện thoại "
-                      value={values.dienthoai}
-                      onChange={prop.handleChange}
-                      onBlur={handleBlur}
-                      className={
-                        errors.dienthoai && touched.dienthoai && 'error'
-                      }
-                    />
-                    {errors.dienthoai && touched.dienthoai && (
-                      <div className="input-feedback">{errors.dienthoai}</div>
-                    )}
-                  </Form.Group> */}
                   <Form.Group>
                     <Form.Label htmlFor="dienthoai">Điện thoại</Form.Label>
                     <Form.Control
@@ -559,7 +541,6 @@ const Employee = (propsEmployee) => {
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                  variant="primary"
                   onClick={createClick}
                 >
                   Thêm
@@ -602,6 +583,32 @@ const Employee = (propsEmployee) => {
                 <Button
                   variant="secondary"
                   onClick={closeDeleteModal}
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            {/* notification modal */}
+            <Modal
+              show={modalState}
+              onHide={() => {
+                setModalState(false);
+              }}
+              size="sm"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Thông báo từ Admin</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>{notiState}</Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setModalState(false);
+                  }}
                 >
                   Close
                 </Button>

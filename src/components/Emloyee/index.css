@@ -8,7 +8,7 @@
 }
 .topProject {
   /* margin-left: 40px; */
-  font-family: "Fjalla One", sans-serif;
+  /* font-family: "Fjalla One", sans-serif; */
   font-size: 28px;
   font-weight: bold;
   font-stretch: normal;
@@ -20,6 +20,7 @@
 }
 .test {
   position: fixed;
+  list-style-type: none;
 }
 .projectTitle {
   background: #0e17c7;
@@ -29,9 +30,9 @@
   padding-left: 4vh;
 }
 
-.row .FirstColumnInDashBoard {
+.row .FirstColumnInEmployee {
   background: blue;
-  font-family: "Fjalla One", sans-serif;
+  /* font-family: "Fjalla One", sans-serif; */
   font-size: 25px;
   font-weight: normal;
   font-stretch: normal;
@@ -43,23 +44,24 @@
   border-bottom: 0px;
   background-color: #f2f2f2;
   height: 93vh;
-  /* display: flex; */
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 2em;
 }
 
-.row .mainterDashBoard {
+.row .maintainEmployee {
   border: solid 1px #707070;
   padding-top: 6vh;
-  padding-left: 4vw;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
 }
-.mainterDashBoard .buttonDashBoard {
+.maintainEmployee .buttonDashBoard {
   margin-bottom: 5vh;
   margin-top: 3vh;
   font-size: 3rem;
 }
-.FirstColumnInDashBoard .link-Employees {
+.FirstColumnInEmployee .link-Employees {
   color: blue;
 }
 .edit-Employee {
@@ -67,14 +69,26 @@
 }
 .row-header {
   font-size: 20px;
+  background-color: #f2f2f2;
 }
-
-.row-header ._button-edit {
+.row-employees {
+  font-size: 20px;
+}
+.row .search-header{
+  width: 60%;
+}
+.row-employees ._button-edit {
   margin-right: 2em;
   font-size: 25px;
 }
-.row-header ._button-delete {
+.row-employees ._button-delete, .modal-foorter .btn-primary {
   font-size: 25px;
+}
+.form-group .form-label {
+  font-size: 1.5em;
+}
+.form-group .form-control{
+  font-size: 1.5em;
 }
 .input-group .input-search {
   padding: 2rem;
@@ -82,15 +96,4 @@
 }
 .input-group .button-search {
   width: 7rem;
-}
-/* Tablet */
-@media only screen and (max-width: 1012px) {
-  .row .FirstColumnInDashBoard{
-    display: none;
-  }
-}
-@media only screen and (min-width: 1020px) {
-  .row .FirstColumnInDashBoard{
-    display: flex ;
-  }
 }
