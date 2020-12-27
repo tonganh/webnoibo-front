@@ -1,6 +1,8 @@
 /* eslint-disable linebreak-style */
 
-import { ADD, GET } from './Types';
+import {
+  ADD, DELETE, GET, UPDATE,
+} from './Types';
 
 // eslint-disable-next-line import/prefer-default-export
 export function getProject(data) {
@@ -17,13 +19,13 @@ export function addProject(data) {
 }
 export function deleteProject(data) {
   return (dispatch) => dispatch({
-    type: ADD,
+    type: DELETE,
     payload: data,
   });
 }
 export function updateProject(data) {
   return (dispatch) => dispatch({
-    type: ADD,
+    type: UPDATE,
     payload: data,
   });
 }

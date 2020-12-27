@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 /* eslint-disable linebreak-style */
 
@@ -18,7 +19,7 @@ const projectReducer = (state = initialState, action) => {
       };
     case UPDATE: return {
       ...state,
-      projects: state.projects.map((project) => (project.id === action.payload.id ? action.payload : project)),
+      projects: state.projects.map((project) => (project._id === action.payload.id ? action.payload : project)),
     };
     case ADD: return {
       ...state,
@@ -26,7 +27,7 @@ const projectReducer = (state = initialState, action) => {
     };
     case DELETE: return {
       ...state,
-      projects: state.projects.filter((project) => project.id !== action.payload),
+      projects: state.projects.filter((project) => project._id !== action.payload),
     };
     default:
       return state;

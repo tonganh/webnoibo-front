@@ -156,19 +156,23 @@ const Employee = (propsEmployee) => {
         }
         const createClick = (e) => {
           e.preventDefault();
-          testAPI.post('/employees/register', qs.stringify(values)).then((data) => {
-            if (data.data.message === 'User already exist.') {
-              setNotiState('User already exist.');
-              // setCreateModal(false);
-              setModalState(true);
-            } else {
-              setNotiState('Successfull.');
-              propsEmployee.addUsertoList(data.data);
-              setCreateModal(false);
-            }
-          }).catch((err) => {
-            setNotiState(err);
-          });
+          if (errors.length !== 0) {
+            console.log('123123');
+          } else {
+            testAPI.post('/employees/register', qs.stringify(values)).then((data) => {
+              if (data.data.message === 'User already exist.') {
+                setNotiState('User already exist.');
+                // setCreateModal(false);
+                setModalState(true);
+              } else {
+                setNotiState('Successfull.');
+                propsEmployee.addUsertoList(data.data);
+                setCreateModal(false);
+              }
+            }).catch((err) => {
+              setNotiState(err);
+            });
+          }
         };
         const conFirmDelte = () => {
           // e.preventDefault();

@@ -10,13 +10,15 @@ import {
   Button, Col, Container, Row, Table, InputGroup, FormControl, Modal, Form,
 } from 'react-bootstrap';
 
-import ProTypes from 'prop-types';
+import ProTypes, { object } from 'prop-types';
 import './index.css';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
 import Select from 'react-select';
-import { getProject, addProject, deleteProject } from '../../store/project/Action';
+import {
+  getProject, addProject, deleteProject, updateProject,
+} from '../../store/project/Action';
 import { actionLogOut } from '../../store/login/Actions';
 import testAPI from '../../untils/api';
 
@@ -29,6 +31,8 @@ const Project = (propProject) => {
   const [employeeInProject, setEmployeeInProject] = useState([]);
   const [modalDelete, setModalDelete] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [titleModal, setTitleModal] = useState({ title: '', button: '' });
+  const [selectedUser, setSelectedUser] = useState([]);
   const format = (str) => {
     const s2 = str.split('-');
     return `${s2[2]}-${s2[1]}-${s2[0]}`;
@@ -135,22 +139,35 @@ const Project = (propProject) => {
           for (const i of employeeUpdate) {
             values.members.push(`${i.value}`);
           }
-          testAPI.post('/projects/create', values).then((data) => {
-            resetValues();
-            propProject.addProject(data.data.data[0]);
-            setModalCreate(false);
-          });
-          // console.log('values', values);
+          if (Object.keys(errors).length === 0) {
+            if (titleModal.title === 'Thêm dự án') {
+              testAPI.post('/projects/create', values).then((data) => {
+                resetValues();
+                propProject.addProject(data.data.data[0]);
+                console.log('data', data);
+                setModalCreate(false);
+              }).catch((err) => {
+                console.log('err', err);
+              });
+            } else {
+              testAPI.post(`/projects/update/${values._id}`, values).then((data) => {
+                resetValues();
+                propProject.updateProject(data.data.data);
+                console.log('data', data);
+                setModalCreate(false);
+              }).catch((err) => {
+                console.log('err', err);
+              });
+            }
+          }
         };
         const confirmDelete = () => {
           testAPI.post(`projects/delete/${values._id}`).then((data) => {
-            if (data.data.message === 'Successfull') {
-              setModalDelete(false);
-              resetValues();
-            }
+            propProject.deleteProject(values._id);
+            setModalDelete(false);
+            resetValues();
           }).catch((err) => {
             console.log('err', err);
-            setModalDelete(false);
           });
         };
         return (
@@ -204,6 +221,7 @@ const Project = (propProject) => {
                               <Button
                                 className="buttonDashBoard"
                                 onClick={() => {
+                                  setTitleModal({ title: 'Thêm dự án', button: 'Thêm' });
                                   setModalCreate(true);
                                 }}
                               >
@@ -265,7 +283,21 @@ const Project = (propProject) => {
                                   </div>
                                 </td>
                                 <td className="tbody-hanhDong md-col-2 text-center" colSpan="2">
-                                  <Button className="_button-edit btn btn-primary">
+                                  <Button
+                                    className="_button-edit btn btn-primary"
+                                    onClick={() => {
+                                      setTitleModal({ title: 'Sửa', button: 'Sửa' });
+                                      setModalCreate(true);
+                                      console.log('project', project);
+                                      const result = [];
+                                      // eslint-disable-next-line no-restricted-syntax
+                                      for (const i of project.memberInProject) {
+                                        result.push({ value: i._id, label: i.name });
+                                      }
+                                      Object.assign(values, project);
+                                      setSelectedUser(result);
+                                    }}
+                                  >
                                     Sửa
                                   </Button>
                                   <Button
@@ -274,6 +306,7 @@ const Project = (propProject) => {
                                       Object.assign(values, project);
                                       // console.log('values', values);
                                       setModalDelete(true);
+                                      console.log('errors', errors);
                                     }}
                                   >
                                     Xóa
@@ -304,13 +337,13 @@ const Project = (propProject) => {
               centered
             >
               <Modal.Header closeButton>
-                <Modal.Title>Thêm dự án</Modal.Title>
+                <Modal.Title>{titleModal.title}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Form noValidate>
                   {/* Name of project */}
                   <Form.Group>
-                    <Form.Label htmlFor="name">New Name</Form.Label>
+                    <Form.Label htmlFor="name">Tên dự án</Form.Label>
                     <Form.Control
                       id="name"
                       name="name"
@@ -322,7 +355,7 @@ const Project = (propProject) => {
                       className={errors.name && touched.name && 'error'}
                     />
                     {errors.name && touched.name && (
-                      <div className="input-feedback">{errors.name}</div>
+                    <div className="input-feedback">{errors.name}</div>
                     )}
                   </Form.Group>
                   {/* Batdau */}
@@ -338,7 +371,7 @@ const Project = (propProject) => {
                       className={errors.batdau && touched.batdau && 'error'}
                     />
                     {errors.batdau && touched.batdau && (
-                      <div className="input-feedback">{errors.batdau}</div>
+                    <div className="input-feedback">{errors.batdau}</div>
                     )}
                   </Form.Group>
                   {/* Ket thuc */}
@@ -354,7 +387,7 @@ const Project = (propProject) => {
                       className={errors.ketthuc && touched.ketthuc && 'error'}
                     />
                     {errors.ketthuc && touched.ketthuc && (
-                      <div className="input-feedback">{errors.ketthuc}</div>
+                    <div className="input-feedback">{errors.ketthuc}</div>
                     )}
                   </Form.Group>
                   {/* Trang thai */}
@@ -379,6 +412,7 @@ const Project = (propProject) => {
                     isMulti
                     name="colors"
                     options={employeeInProject}
+                    defaultValue={[...selectedUser]}
                     className="basic-multi-select"
                     classNamePrefix="select"
                     onChange={(data) => { setEmployeeUpdate(data); }}
@@ -390,7 +424,7 @@ const Project = (propProject) => {
                   variant="primary"
                   onClick={onClickSend}
                 >
-                  Sửa
+                  {titleModal.button}
                 </Button>
                 <Button
                   variant="secondary"
@@ -426,7 +460,7 @@ const Project = (propProject) => {
                 <Button onClick={() => { setModalDelete(false); resetValues(); }}>Hủy</Button>
               </Modal.Footer>
             </Modal> */}
-
+            {/* Modal delete */}
             <Modal
               show={modalDelete}
               onHide={() => {
@@ -443,9 +477,7 @@ const Project = (propProject) => {
               <Modal.Footer>
                 <Button
                   variant="secondary"
-                  onClick={() => {
-                    setModalDelete(false);
-                  }}
+                  onClick={confirmDelete}
                   className="btn-danger btn"
                 >
                   Xóa
@@ -476,6 +508,7 @@ Project.ProTypes = {
   deleteProject: ProTypes.func.isRequired,
   userlogin: ProTypes.objectOf(ProTypes.object).isRequired,
   employees: ProTypes.objectOf(ProTypes.object).isRequired,
+  updateProject: ProTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   projectReducer: state.projectReducer,
@@ -487,4 +520,5 @@ export default connect(mapStateToProps, {
   actionLogOut,
   addProject,
   deleteProject,
+  updateProject,
 })(Project);
