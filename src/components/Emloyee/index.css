@@ -59,7 +59,7 @@
 .maintainEmployee .buttonDashBoard {
   margin-bottom: 5vh;
   margin-top: 3vh;
-  font-size: 3rem;
+  font-size: 2em;
 }
 .FirstColumnInEmployee .link-Employees {
   color: blue;
@@ -79,10 +79,10 @@
 }
 .row-employees ._button-edit {
   margin-right: 2em;
-  font-size: 25px;
+  font-size: 1em;
 }
 .row-employees ._button-delete, .modal-foorter .btn-primary {
-  font-size: 25px;
+  font-size: 1em;
 }
 .form-group .form-label {
   font-size: 1.5em;

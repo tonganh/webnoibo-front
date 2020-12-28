@@ -60,7 +60,7 @@
 .mainterProjects .buttonDashBoard {
   margin-bottom: 5vh;
   margin-top: 3vh;
-  font-size: 3rem;
+  font-size: 2em;
 }
 .FirstColumnInProject .link-Employees {
   color: blue;
@@ -78,11 +78,11 @@
 }
 
 ._pj-row ._button-edit {
-  margin-right: 2em;
-  font-size: 25px;
+  margin-right: 1em;
+  font-size: 1em;
 }
 ._pj-row ._button-delete {
-  font-size: 25px;
+  font-size: 1em;
 }
 .input-group .input-search {
   padding: 2rem;

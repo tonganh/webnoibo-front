@@ -37,7 +37,7 @@ const Employee = (propsEmployee) => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const history = useHistory();
-  const xoa_dau = (str) => {
+  const format = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
     str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
@@ -54,7 +54,7 @@ const Employee = (propsEmployee) => {
     str = str.replace(/Đ/g, 'D');
     return str;
   };
-  const format = (str) => {
+  const formatDate = (str) => {
     const s2 = str.split('-');
     return `${s2[2]}-${s2[1]}-${s2[0]}`;
   };
@@ -78,10 +78,10 @@ const Employee = (propsEmployee) => {
   }, [propsEmployee.employees.employees]);
 
   useEffect(() => {
-    const results = propsEmployee.employees.employees.filter((user) => xoa_dau(user.name)
-      .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase())
-      || xoa_dau(user.email)
-        .toLowerCase().includes(xoa_dau(searchTerm).toLowerCase()));
+    const results = propsEmployee.employees.employees.filter((user) => format(user.name)
+      .toLowerCase().includes(format(searchTerm).toLowerCase())
+      || format(user.email)
+        .toLowerCase().includes(format(searchTerm).toLowerCase()));
     setSearchState(results);
   }, [searchTerm]);
   useEffect(() => {
@@ -228,7 +228,9 @@ const Employee = (propsEmployee) => {
                         <li>
                           <Link to="/project">Dự án</Link>
                         </li>
-                        <li>Báo cáo</li>
+                        <li>
+                          <Link to="/report">Báo cáo</Link>
+                        </li>
                       </ul>
                     </Col>
                     <Col md={10} className="maintainEmployee">
@@ -286,7 +288,7 @@ const Employee = (propsEmployee) => {
                                   <td>{data.name || ''}</td>
                                   <td>{data.email || ''}</td>
                                   <td>{data.dienthoai}</td>
-                                  <td>{format(data.sinhnhat)}</td>
+                                  <td>{formatDate(data.sinhnhat)}</td>
                                   <td>
                                     <Button
                                       className="_button-edit"

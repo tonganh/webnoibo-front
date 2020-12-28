@@ -43,7 +43,7 @@ const Project = (propProject) => {
     }
     return 'xong';
   };
-  const xoa_dau = (str) => {
+  const formatStr = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
     str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
@@ -82,9 +82,9 @@ const Project = (propProject) => {
     setProjectState(propProject.projectReducer.projects);
   }, [propProject.projectReducer.projects]);
   useEffect(() => {
-    const results = propProject.projectReducer.projects.filter((user) => xoa_dau(user.name)
+    const results = propProject.projectReducer.projects.filter((user) => formatStr(user.name)
       .toLowerCase()
-      .includes(xoa_dau(searchTerm).toLowerCase()));
+      .includes(formatStr(searchTerm).toLowerCase()));
     setProjectState(results);
   }, [searchTerm]);
   // Set employees in redux
@@ -209,7 +209,9 @@ const Project = (propProject) => {
                             Dự án
                           </Link>
                         </li>
-                        <li>Báo cáo</li>
+                        <li>
+                          <Link to="/report">Báo cáo</Link>
+                        </li>
                       </ul>
                     </Col>
                     <Col xs={10} className="maintainEmployee">
@@ -437,29 +439,6 @@ const Project = (propProject) => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            {/* Modal Delete */}
-            {/* <Modal
-              show={modalDelete}
-              onHide={() => {
-                setModalDelete(false);
-                resetValues();
-              }}
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Header>
-                <Modal.Title>
-                  Thông báo của ADmin
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                Bạn có chắc muốn xóa?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button className="btn btn-danger" onClick={confirmDelete}>Xóa</Button>
-                <Button onClick={() => { setModalDelete(false); resetValues(); }}>Hủy</Button>
-              </Modal.Footer>
-            </Modal> */}
             {/* Modal delete */}
             <Modal
               show={modalDelete}

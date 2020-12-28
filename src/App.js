@@ -6,6 +6,7 @@ import Dashboard from './components/DashBoard/Dashboard';
 import Employee from './components/Emloyee/Employee';
 import Login from './components/Login/Login';
 import Project from './components/Project/Project';
+import Report from './components/Report/Report';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/project" component={Project} />
         <Route exact path="/employee" component={Employee} />
+        <Route exact path="/report" component={Report} />
       </Switch>
     </Router>
   );

@@ -1,0 +1,23 @@
+.form-group .input-search-report {
+  padding: 2rem;
+  font-size: 2em;
+}
+.row .search-header-report {
+  font-size: 1em;
+  justify-content: center;
+}
+.col-md-3 .search-Report {
+  display: flex;
+  justify-content: center;
+  font-size: 2em;
+  width: 60%;
+}
+.form-search{
+  margin: 2em 0 2em 0;
+}
+.report-table {
+  font-size: 2em;
+}
+.form-group .select-Project{
+  font-size: 2em;
+}
