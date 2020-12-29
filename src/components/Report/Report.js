@@ -9,10 +9,15 @@ import {
 import { connect } from 'react-redux';
 import ProTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
+import moment from 'moment';
+import { Collapse, DatePicker, Space } from 'antd';
 import { getAllOts } from '../../store/ots/Action';
 
 import './index.css';
 import testAPI from '../../untils/api';
+import 'antd/dist/antd.css';
+
+const { RangePicker } = DatePicker;
 
 const Report = (propsReport) => {
   const [listOts, setListOts] = useState([]);
@@ -21,9 +26,22 @@ const Report = (propsReport) => {
   const initialSearch = {
     name: '',
     projectId: '',
-    startfinish: '',
+    start: '',
+    finish: '',
   };
+  const [dateState, setDateState] = useState(['', '']);
+
+  const dateFormatList = ['DD/MM/YYYY'];
   const [searchTerm, setSearchTerm] = useState(initialSearch);
+  function onChange(date, dateString) {
+    setSearchTerm({
+      ...searchTerm,
+      start: dateString[0].split('/').reverse().join('/'),
+      finish: dateString[1].split('/').reverse().join('/'),
+    });
+    // console.log('date string', dateState);
+    // console.log('date state', date);
+  }
   const formatName = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
@@ -41,16 +59,18 @@ const Report = (propsReport) => {
     str = str.replace(/Đ/g, 'D');
     return str;
   };
-  if (Object.keys(propsReport.reportOts).length === 0) {
-    history.push('/');
-  }
+  useEffect(() => {
+    testAPI.post('ots/getAll').then((data) => {
+      propsReport.getAllOts(data.data.data);
+      setListOts(data.data.data);
+    });
+  }, []);
   useEffect(() => {
     setListOts(propsReport.reportOts);
   }, [propsReport.reportOts]);
   // Update vao reducer trong redux
   const handleChangeSearch = (e) => {
     setSearchTerm({ ...searchTerm, [e.target.name]: e.target.value });
-    console.log('search', searchTerm);
   };
 
   useEffect(() => {
@@ -58,27 +78,26 @@ const Report = (propsReport) => {
       .toLowerCase()
       .includes(formatName(searchTerm.name).toLowerCase()));
     setListOts(results);
-  }, [searchTerm]);
+  }, [searchTerm.name]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (searchTerm.projectId === '') {
       testAPI.post('ots/getAll').then((data) => {
         propsReport.getAllOts(data.data.data);
         setListOts(data.data.data);
+        searchTerm.name = '';
       });
     } else {
       testAPI.post('ots/serachOption', searchTerm).then((data) => {
-        if (data.data.message === 'fail') {
-          console.log('123123');
-        } else {
-          propsReport.getAllOts(data.data.data);
-          setListOts(data.data.data);
-        }
+        setListOts(data.data.data);
+        propsReport.getAllOts(data.data.data);
+        console.log('data', data);
       }).catch((err) => {
-        console.log('err', err);
       });
     }
   };
+  const resultDirect = [];
   return (
     <>
       <div className="projectPage">
@@ -114,9 +133,14 @@ const Report = (propsReport) => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/report" className="clickProject">
+                    <p to="/report">
                       Báo cáo
-                    </Link>
+                      <ul className="optionOtOts">
+                        <li>
+                          <Link className="clickProject" to="/report/">OTS</Link>
+                        </li>
+                      </ul>
+                    </p>
                   </li>
                 </ul>
               </Col>
@@ -146,16 +170,9 @@ const Report = (propsReport) => {
                         />
                       </Form.Group>
                       <Form.Group as={Col} md="3">
-                        <Form.Control
-                          placeholder="Thời gian từ ngày đến ngày"
-                          aria-label="Recipient's username"
-                          aria-describedby="basic-addon2"
-                          className="input-search-report flex-grow-9 "
-                          type="text"
-                          name="startfinish"
-                          onChange={handleChangeSearch}
-                          value={searchTerm.startfinish}
-                        />
+                        <Space direction="vertical" size={11} className="ant-space-Fromto d-flex">
+                          <RangePicker className="d-flex " onChange={onChange} format={dateFormatList} />
+                        </Space>
                       </Form.Group>
                       <Form.Group as={Col} md="3">
                         <Form.Control
@@ -201,7 +218,17 @@ const Report = (propsReport) => {
                         <tr id={index} className="d-flex">
                           <td className="text-center col-md-4 report-table">{report._id[0].name}</td>
                           <td className="text-center col-md-4 report-table">{report.timeofday.length}</td>
-                          <td className="text-center col-md-4 report-table">Xem Chi tiết</td>
+                          <td className="text-center col-md-4 report-table">
+                            <Link
+                              to="/report/ots"
+                              onClick={() => {
+                                resultDirect.push(report);
+                                propsReport.getAllOts(resultDirect);
+                              }}
+                            >
+                              Xem chi tiết
+                            </Link>
+                          </td>
                         </tr>
                       ))) : (
                         <p>Không có báo cáo nào.</p>

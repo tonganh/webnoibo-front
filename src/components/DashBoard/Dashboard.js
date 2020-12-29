@@ -18,43 +18,92 @@ import { Formik } from 'formik';
 import testAPI from '../../untils/api';
 import { actionLogOut } from '../../store/login/Actions';
 import { getProject } from '../../store/project/Action';
-import {
-  getEmployeesList, addUsertoList, deleteUser,
-} from '../../store/employees/Action';
 import { getAllOts } from '../../store/ots/Action';
-
+import {
+  getEmployeesList, updateEmployeeList, addUsertoList, deleteUser,
+} from '../../store/employees/Action';
 import './index.css';
 
 const qs = require('querystring');
 
-const Dashboard = (propsDashBoard) => {
+const Dashboard = (propsEmployee) => {
+  const [Employees, setEmployees] = useState([]);
+  const [searchState, setSearchState] = useState([]);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [modalState, setModalState] = useState(false);
+  const [notiState, setNotiState] = useState('');
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const history = useHistory();
-  if (Object.keys(propsDashBoard.userLogin).length === 0) {
+  if (Object.keys(propsEmployee.userLogin).length === 0) {
     history.push('/');
   }
+  const handleChangeSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
   useEffect(() => {
-    if (propsDashBoard.userLogin.role === 'AD') {
-      testAPI.get('projects/admin').then((data) => {
-        propsDashBoard.getProject(data.data.data);
+    if (propsEmployee.userLogin.role === 'AD') {
+      testAPI.get('/employees/').then((data) => {
+        // eslint-disable-next-line no-unused-expressions
+        propsEmployee.getEmployeesList(data.data);
+        setSearchState(data.data);
       });
     }
-  }, [propsDashBoard.loginReducer]);
+  }, []);
   useEffect(() => {
-    testAPI.post('ots/getAll').then((data) => {
-      propsDashBoard.getAllOts(data.data.data);
-    });
-  }, [propsDashBoard.OtsReducer]);
+    if (propsEmployee.userLogin.role === 'AD') {
+      testAPI.post('/ots/getAll').then((data) => {
+        // eslint-disable-next-line no-unused-expressions
+        propsEmployee.getAllOts(data.data.data);
+      });
+    }
+  }, []);
+  useEffect(() => {
+    setEmployees(propsEmployee.employees.employees);
+  }, [propsEmployee.employees.employees]);
+  useEffect(() => {
+    if (propsEmployee.userLogin.role === 'AD') {
+      testAPI.get('projects/admin').then((data) => {
+        propsEmployee.getProject(data.data.data);
+      });
+    }
+  }, [propsEmployee.loginReducer]);
   return (
     <Formik
       initialValues={{
         email: '', password: '', name: '', sinhnhat: '', dienthoai: '',
       }}
-
+      onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(false);
+        testAPI.post(`/employees/${values.id}`, qs.stringify(values)).then((data) => {
+          if (data.data.message === 'Email da ton tai.') {
+            setNotiState('Email da ton tai.');
+            setModalState(true);
+          } else {
+            setModalEdit(false);
+            setNotiState('Thanh cong');
+            propsEmployee.updateEmployeeList(data.data);
+          }
+        }).catch((err) => {
+          setModalState(true);
+          setNotiState(err);
+        });
+      }}
     >
       {(prop) => {
         const {
           values,
         } = prop;
+
+        const conFirmDelte = () => {
+          // e.preventDefault();
+          testAPI.post(`employees/deleteUser/${values.id}`).then((data) => {
+            if (data.data.message === 'successfull') {
+              propsEmployee.deleteUser(values.id);
+              setDeleteModal(false);
+            }
+          });
+        };
         return (
           <>
             <div className="EmployeePage">
@@ -66,7 +115,7 @@ const Dashboard = (propsDashBoard) => {
                   <Button
                     onClick={() => {
                       localStorage.clear();
-                      propsDashBoard.actionLogOut();
+                      propsEmployee.actionLogOut();
                     }}
                     className="_logOut"
                   >
@@ -83,7 +132,7 @@ const Dashboard = (propsDashBoard) => {
                           <Link to="/dashboard" className="link-dashboard">Dashboard</Link>
                         </li>
                         {
-                          propsDashBoard.userLogin.role === 'AD'
+                          propsEmployee.userLogin.role === 'AD'
                             ? (
                               <li>
                                 <Link to="/employee">Nhân sự</Link>
@@ -105,7 +154,7 @@ const Dashboard = (propsDashBoard) => {
                         </div>
                         <div className="md-col-4 text-center">
                           <h1>Nhân viên</h1>
-                          <h1>{propsDashBoard.employees.employees.length}</h1>
+                          <h1>{propsEmployee.employees.employees.length}</h1>
                         </div>
                       </div>
                       <div className="Rectangle-22 md-col-4">
@@ -114,7 +163,7 @@ const Dashboard = (propsDashBoard) => {
                         </div>
                         <div className="md-col-4 text-center">
                           <h1>Dự án</h1>
-                          <h1>{propsDashBoard.projects.length}</h1>
+                          <h1>{propsEmployee.projects.length}</h1>
                         </div>
                       </div>
                     </Col>
@@ -122,7 +171,31 @@ const Dashboard = (propsDashBoard) => {
                 </Container>
               </div>
             </div>
-
+            {/* notification modal */}
+            <Modal
+              show={modalState}
+              onHide={() => {
+                setModalState(false);
+              }}
+              size="sm"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Thông báo từ Admin</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>{notiState}</Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setModalState(false);
+                  }}
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </>
         );
       }}
@@ -137,16 +210,16 @@ Dashboard.ProTypes = {
   deleteUser: ProTypes.func.isRequired,
   actionLogOut: ProTypes.func.isRequired,
   getProject: ProTypes.func.isRequired,
-  getAllOts: ProTypes.func.isRequired,
 };
 const mapStatetoProps = (state) => ({
   employees: state.employees,
   userLogin: state.loginReducer.userInfo,
   projects: state.projectReducer.projects,
-  OtsReducer: state.OtsReducer,
+  ots: state.otsReducer.reportOts,
 });
 export default connect(mapStatetoProps, {
   getEmployeesList,
+  updateEmployeeList,
   addUsertoList,
   deleteUser,
   actionLogOut,

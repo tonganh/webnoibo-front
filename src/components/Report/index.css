@@ -21,3 +21,13 @@
 .form-group .select-Project{
   font-size: 2em;
 }
+.optionOtOts{
+  list-style-type: none;
+}
+.main-header .linkhRefReport{
+  margin-right: 1em;
+  font-size: 2em;
+}
+.form-group .datePickInReport{
+  font-size: 1.5em;
+}

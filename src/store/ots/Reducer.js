@@ -1,7 +1,7 @@
 import { GET } from './Types';
 
 const initialSate = {
-  reportOts: {},
+  reportOts: [],
 };
 
 const otsReducer = (state = initialSate, action) => {

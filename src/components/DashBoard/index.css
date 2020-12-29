@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
 }
-.topProject {
+.topProject .hiSoftText {
   /* margin-left: 40px; */
   /* font-family: "Fjalla One", sans-serif; */
   font-size: 28px;
