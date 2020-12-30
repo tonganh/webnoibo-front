@@ -39,9 +39,9 @@ const Project = (propProject) => {
   };
   const checkStaetPj = (str) => {
     if (str === 'Đang làm') {
-      return 'danglam';
+      return 'badge bg-warning text-dark';
     }
-    return 'xong';
+    return 'badge bg-success';
   };
   const formatStr = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
@@ -94,9 +94,9 @@ const Project = (propProject) => {
       initialValues={{
         _id: '',
         name: '',
-        batdau: '',
-        ketthuc: '',
-        trangthai: '',
+        start: '',
+        end: '',
+        state: '',
         members: [],
       }}
       validate={(values) => {
@@ -104,15 +104,15 @@ const Project = (propProject) => {
         if (!values.name) {
           errors.name = 'Nhập tên dự án.';
         }
-        if (!values.batdau) {
-          errors.batdau = 'Required';
+        if (!values.start) {
+          errors.start = 'Required';
         }
-        if (!values.ketthuc) {
-          errors.ketthuc = 'Required';
+        if (!values.end) {
+          errors.end = 'Required';
         }
-        if (new Date(values.batdau) > new Date(values.ketthuc)) {
-          errors.batdau = 'Thời gian bắt đầu phải trước thời gian kết thúc.';
-          errors.ketthuc = 'Thời gian kết thúc  phải muộn hơn thời gian bắt đầu.';
+        if (new Date(values.start) > new Date(values.end)) {
+          errors.start = 'Thời gian bắt đầu phải trước thời gian kết thúc.';
+          errors.end = 'Thời gian kết thúc  phải muộn hơn thời gian bắt đầu.';
         }
         return errors;
       }}
@@ -130,33 +130,32 @@ const Project = (propProject) => {
         function resetValues() {
           values._id = '';
           values.name = '';
-          values.batdau = '';
-          values.ketthuc = '';
-          values.trangthai = '';
+          values.start = '';
+          values.end = '';
+          values.state = '';
           values.members = [];
         }
         const onClickSend = () => {
+          values.members = [];
           for (const i of employeeUpdate) {
             values.members.push(`${i.value}`);
           }
+          console.log('employeeUpdate', employeeUpdate);
+          console.log('values', values);
           if (Object.keys(errors).length === 0) {
             if (titleModal.title === 'Thêm dự án') {
               testAPI.post('/projects/create', values).then((data) => {
                 resetValues();
                 propProject.addProject(data.data.data[0]);
-                console.log('data', data);
                 setModalCreate(false);
               }).catch((err) => {
-                console.log('err', err);
               });
             } else {
               testAPI.post(`/projects/update/${values._id}`, values).then((data) => {
                 resetValues();
-                propProject.updateProject(data.data.data);
-                console.log('data', data);
+                propProject.updateProject(data.data.data[0]);
                 setModalCreate(false);
               }).catch((err) => {
-                console.log('err', err);
               });
             }
           }
@@ -167,7 +166,6 @@ const Project = (propProject) => {
             setModalDelete(false);
             resetValues();
           }).catch((err) => {
-            console.log('err', err);
           });
         };
         return (
@@ -263,26 +261,24 @@ const Project = (propProject) => {
                         <tbody>
                           {projectState.length > 0 ? (
                             projectState.map((project) => (
-                              <tr id={project.id} className="_pj-row">
+                              <tr id={project._id} className="_pj-row">
                                 <td className="tbody-name md-col-2" colSpan="2">
                                   {project.name}
                                 </td>
                                 <td className="tbody-start md-col-2" colSpan="2">
-                                  {format(project.batdau)}
+                                  {format(project.start)}
                                 </td>
                                 <td className="tbody-finishDate md-col-2" colSpan="2">
-                                  {format(project.ketthuc)}
+                                  {format(project.end)}
                                 </td>
                                 <td className="tbody-state  text-center md-col-2" colSpan="2">
-                                  <div
+                                  <span
                                     className={`${checkStaetPj(
-                                      project.trangthai,
-                                    )}`}
+                                      project.state,
+                                    )} fontSizeInState`}
                                   >
-                                    <div>
-                                      <p>{project.trangthai}</p>
-                                    </div>
-                                  </div>
+                                    {project.state}
+                                  </span>
                                 </td>
                                 <td className="tbody-hanhDong md-col-2 text-center" colSpan="2">
                                   <Button
@@ -290,11 +286,12 @@ const Project = (propProject) => {
                                     onClick={() => {
                                       setTitleModal({ title: 'Sửa', button: 'Sửa' });
                                       setModalCreate(true);
-                                      console.log('project', project);
                                       const result = [];
                                       // eslint-disable-next-line no-restricted-syntax
-                                      for (const i of project.memberInProject) {
-                                        result.push({ value: i._id, label: i.name });
+                                      if (project.memberInProject.length !== 0) {
+                                        for (const i of project.memberInProject) {
+                                          result.push({ value: i._id, label: i.name });
+                                        }
                                       }
                                       Object.assign(values, project);
                                       setSelectedUser(result);
@@ -308,7 +305,6 @@ const Project = (propProject) => {
                                       Object.assign(values, project);
                                       // console.log('values', values);
                                       setModalDelete(true);
-                                      console.log('errors', errors);
                                     }}
                                   >
                                     Xóa
@@ -360,48 +356,48 @@ const Project = (propProject) => {
                     <div className="input-feedback">{errors.name}</div>
                     )}
                   </Form.Group>
-                  {/* Batdau */}
+                  {/* start */}
                   <Form.Group>
-                    <Form.Label htmlFor="batdau">Bắt đầu</Form.Label>
+                    <Form.Label htmlFor="start">Bắt đầu</Form.Label>
                     <Form.Control
-                      id="batdau"
-                      name="batdau"
+                      id="start"
+                      name="start"
                       type="date"
-                      value={values.batdau}
+                      value={values.start}
                       onChange={prop.handleChange}
                       onBlur={handleBlur}
-                      className={errors.batdau && touched.batdau && 'error'}
+                      className={errors.start && touched.start && 'error'}
                     />
-                    {errors.batdau && touched.batdau && (
-                    <div className="input-feedback">{errors.batdau}</div>
+                    {errors.start && touched.start && (
+                    <div className="input-feedback">{errors.start}</div>
                     )}
                   </Form.Group>
                   {/* Ket thuc */}
                   <Form.Group>
-                    <Form.Label htmlFor="ketthuc">Kết thúc</Form.Label>
+                    <Form.Label htmlFor="end">Kết thúc</Form.Label>
                     <Form.Control
-                      id="ketthuc"
-                      name="ketthuc"
+                      id="end"
+                      name="end"
                       type="date"
-                      value={values.ketthuc}
+                      value={values.end}
                       onChange={prop.handleChange}
                       onBlur={handleBlur}
-                      className={errors.ketthuc && touched.ketthuc && 'error'}
+                      className={errors.end && touched.end && 'error'}
                     />
-                    {errors.ketthuc && touched.ketthuc && (
-                    <div className="input-feedback">{errors.ketthuc}</div>
+                    {errors.end && touched.end && (
+                    <div className="input-feedback">{errors.end}</div>
                     )}
                   </Form.Group>
                   {/* Trang thai */}
-                  <Form.Label htmlFor="trangthai">Trạng thái</Form.Label>
+                  <Form.Label htmlFor="state">Trạng thái</Form.Label>
                   <Form.Control
                     as="select"
-                    name="trangthai"
+                    name="state"
                     className="mr-sm-2"
                     id="inlineFormCustomSelect"
                     custom
                     onChange={handleChange}
-                    value={values.trangthai}
+                    value={values.state}
                     defaultValue="Chọn trạng thái."
                   >
                     <option value="...">...</option>
@@ -417,7 +413,10 @@ const Project = (propProject) => {
                     defaultValue={[...selectedUser]}
                     className="basic-multi-select"
                     classNamePrefix="select"
-                    onChange={(data) => { setEmployeeUpdate(data); }}
+                    onChange={(data) => {
+                      console.log('data in change', data);
+                      setEmployeeUpdate(data);
+                    }}
                   />
                 </Form>
               </Modal.Body>

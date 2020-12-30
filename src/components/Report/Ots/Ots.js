@@ -17,7 +17,7 @@ const { Panel } = Collapse;
 const OtsReport = (propsOts) => {
   const [otsOptionList, setOtsOptionList] = useState([]);
   useEffect(() => {
-    if (Object.keys(propsOts.reportOts) !== 0) {
+    if (propsOts.reportOts.length !== 0) {
       setOtsOptionList(propsOts.reportOts[0].timeofday);
     }
   }, [propsOts.reportOts]);

@@ -1,11 +1,5 @@
 /* Employees CSS */
 
-.dasBoardProject {
-  background: #0e17c7;
-  height: 74px;
-  display: flex;
-  align-items: center;
-}
 .topProject {
   /* margin-left: 40px; */
   /* font-family: "Fjalla One", sans-serif; */
@@ -68,10 +62,8 @@
 .edit-Employee {
   margin-right: 10px;
 }
-.danglam {
-  border-radius: 20px;
-  border: solid 1px #ba9e00;
-  background-color: #ffdb79;
+.tbody-state .fontSizeInState {
+  font-size: 20px;
 }
 ._pj-row {
   font-size: 20px;
@@ -93,4 +85,11 @@
 }
 .FirstColumnInProject .clickProject{
   color:blue;
+}
+.input-feedback {
+  color: red;
+  font-size: 1.5em;
+}
+.form-group .error {
+  border-color: red;
 }

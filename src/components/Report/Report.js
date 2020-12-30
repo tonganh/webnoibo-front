@@ -36,8 +36,8 @@ const Report = (propsReport) => {
   function onChange(date, dateString) {
     setSearchTerm({
       ...searchTerm,
-      start: dateString[0].split('/').reverse().join('/'),
-      finish: dateString[1].split('/').reverse().join('/'),
+      start: dateString[0].split('/').reverse().join('-'),
+      finish: dateString[1].split('/').reverse().join('-'),
     });
     // console.log('date string', dateState);
     // console.log('date state', date);
@@ -83,16 +83,16 @@ const Report = (propsReport) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (searchTerm.projectId === '') {
-      testAPI.post('ots/getAll').then((data) => {
+      testAPI.post('ots/getAll', searchTerm).then((data) => {
         propsReport.getAllOts(data.data.data);
         setListOts(data.data.data);
         searchTerm.name = '';
+      }).catch((err) => {
       });
     } else {
       testAPI.post('ots/serachOption', searchTerm).then((data) => {
         setListOts(data.data.data);
         propsReport.getAllOts(data.data.data);
-        console.log('data', data);
       }).catch((err) => {
       });
     }
@@ -171,7 +171,7 @@ const Report = (propsReport) => {
                       </Form.Group>
                       <Form.Group as={Col} md="3">
                         <Space direction="vertical" size={11} className="ant-space-Fromto d-flex">
-                          <RangePicker className="d-flex " onChange={onChange} format={dateFormatList} />
+                          <RangePicker className="d-flex datePickInReport" onChange={onChange} format={dateFormatList} />
                         </Space>
                       </Form.Group>
                       <Form.Group as={Col} md="3">

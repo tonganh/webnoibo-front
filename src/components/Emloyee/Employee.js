@@ -67,7 +67,6 @@ const Employee = (propsEmployee) => {
   useEffect(() => {
     if (propsEmployee.userLogin.role === 'AD') {
       testAPI.get('/employees/').then((data) => {
-        // eslint-disable-next-line no-unused-expressions
         propsEmployee.getEmployeesList(data.data);
         setSearchState(data.data);
       });
@@ -142,7 +141,6 @@ const Employee = (propsEmployee) => {
           values,
           touched,
           errors,
-          // isSubmitting,
           handleChange,
           handleBlur,
           handleSubmit,
@@ -156,13 +154,10 @@ const Employee = (propsEmployee) => {
         }
         const createClick = (e) => {
           e.preventDefault();
-          if (errors.length !== 0) {
-            console.log('123123');
-          } else {
+          if (Object.keys(errors).length === 0) {
             testAPI.post('/employees/register', qs.stringify(values)).then((data) => {
               if (data.data.message === 'User already exist.') {
                 setNotiState('User already exist.');
-                // setCreateModal(false);
                 setModalState(true);
               } else {
                 setNotiState('Successfull.');
@@ -175,7 +170,6 @@ const Employee = (propsEmployee) => {
           }
         };
         const conFirmDelte = () => {
-          // e.preventDefault();
           testAPI.post(`employees/deleteUser/${values.id}`).then((data) => {
             if (data.data.message === 'successfull') {
               propsEmployee.deleteUser(values.id);

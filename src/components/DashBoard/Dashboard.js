@@ -27,26 +27,17 @@ import './index.css';
 const qs = require('querystring');
 
 const Dashboard = (propsEmployee) => {
-  const [Employees, setEmployees] = useState([]);
-  const [searchState, setSearchState] = useState([]);
-  const [modalEdit, setModalEdit] = useState(false);
   const [modalState, setModalState] = useState(false);
   const [notiState, setNotiState] = useState('');
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const history = useHistory();
   if (Object.keys(propsEmployee.userLogin).length === 0) {
     history.push('/');
   }
-  const handleChangeSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
   useEffect(() => {
     if (propsEmployee.userLogin.role === 'AD') {
       testAPI.get('/employees/').then((data) => {
         // eslint-disable-next-line no-unused-expressions
         propsEmployee.getEmployeesList(data.data);
-        setSearchState(data.data);
       });
     }
   }, []);
@@ -59,9 +50,6 @@ const Dashboard = (propsEmployee) => {
     }
   }, []);
   useEffect(() => {
-    setEmployees(propsEmployee.employees.employees);
-  }, [propsEmployee.employees.employees]);
-  useEffect(() => {
     if (propsEmployee.userLogin.role === 'AD') {
       testAPI.get('projects/admin').then((data) => {
         propsEmployee.getProject(data.data.data);
@@ -73,37 +61,11 @@ const Dashboard = (propsEmployee) => {
       initialValues={{
         email: '', password: '', name: '', sinhnhat: '', dienthoai: '',
       }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(false);
-        testAPI.post(`/employees/${values.id}`, qs.stringify(values)).then((data) => {
-          if (data.data.message === 'Email da ton tai.') {
-            setNotiState('Email da ton tai.');
-            setModalState(true);
-          } else {
-            setModalEdit(false);
-            setNotiState('Thanh cong');
-            propsEmployee.updateEmployeeList(data.data);
-          }
-        }).catch((err) => {
-          setModalState(true);
-          setNotiState(err);
-        });
-      }}
     >
       {(prop) => {
         const {
           values,
         } = prop;
-
-        const conFirmDelte = () => {
-          // e.preventDefault();
-          testAPI.post(`employees/deleteUser/${values.id}`).then((data) => {
-            if (data.data.message === 'successfull') {
-              propsEmployee.deleteUser(values.id);
-              setDeleteModal(false);
-            }
-          });
-        };
         return (
           <>
             <div className="EmployeePage">

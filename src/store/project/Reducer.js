@@ -19,7 +19,7 @@ const projectReducer = (state = initialState, action) => {
       };
     case UPDATE: return {
       ...state,
-      projects: state.projects.map((project) => (project._id === action.payload.id ? action.payload : project)),
+      projects: state.projects.map((project) => (project._id === action.payload._id ? action.payload : project)),
     };
     case ADD: return {
       ...state,

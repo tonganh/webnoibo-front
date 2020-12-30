@@ -37,7 +37,6 @@ const Login = (propsLogin) => {
         history.push('/dashboard');
       }
     }).catch((err) => {
-      console.log('err', err);
     });
     // console.log('123');
   }
