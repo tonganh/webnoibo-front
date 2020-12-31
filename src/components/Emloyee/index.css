@@ -92,3 +92,9 @@
 .input-group .button-search {
   width: 7rem;
 }
+.modal-footer .btn_Delete_add{
+  font-size: 1.6em;
+}
+.basic-multi-select .select__multi-value__label {
+  font-size: 1.2em;
+}

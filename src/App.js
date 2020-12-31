@@ -8,6 +8,7 @@ import Login from './components/Login/Login';
 import Project from './components/Project/Project';
 import Report from './components/Report/Report';
 import OtsReport from './components/Report/Ots/Ots';
+import Salary from './components/Report/Salary/Salary';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/employee" component={Employee} />
         <Route exact path="/report" component={Report} />
         <Route exact path="/report/ots" component={OtsReport} />
+        <Route exact path="/report/salary" component={Salary} />
       </Switch>
     </Router>
   );

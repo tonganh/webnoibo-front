@@ -139,6 +139,9 @@ const Report = (propsReport) => {
                         <li>
                           <Link className="clickProject" to="/report/">OTS</Link>
                         </li>
+                        <li>
+                          <Link to="/report/salary">Salary</Link>
+                        </li>
                       </ul>
                     </p>
                   </li>

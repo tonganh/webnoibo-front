@@ -422,13 +422,13 @@ const Employee = (propsEmployee) => {
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                  variant="primary"
+                  variant="primary btn_Delete_add"
                   onClick={handleSubmit}
                 >
                   Sửa
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="secondary btn_Delete_add"
                   onClick={() => {
                     setModalEdit(false);
                   }}
@@ -562,7 +562,7 @@ const Employee = (propsEmployee) => {
             >
 
               <Modal.Header closeButton>
-                <Modal.Title>Delte</Modal.Title>
+                <Modal.Title>Xóa user</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Modal.Title>
@@ -572,16 +572,15 @@ const Employee = (propsEmployee) => {
 
               <Modal.Footer>
                 <Button
-                  variant="primary"
+                  variant="primary btn_Delete_add"
                   onClick={
                     conFirmDelte
-
                   }
                 >
                   Delete
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="secondary btn_Delete_add"
                   onClick={closeDeleteModal}
                 >
                   Close

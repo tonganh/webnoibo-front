@@ -110,20 +110,20 @@ const Dashboard = (propsEmployee) => {
                       </ul>
                     </Col>
                     <Col md={10} className="mainterDashBoard">
-                      <div className="Rectangle-22 md-col-4">
-                        <div className="md-col-4">
+                      <div className="Rectangle-22 md-col-6">
+                        <div className="md-col-6">
                           <i className="fas fa-people-carry" />
                         </div>
-                        <div className="md-col-4 text-center">
+                        <div className="md-col-6 text-center">
                           <h1>Nhân viên</h1>
                           <h1>{propsEmployee.employees.employees.length}</h1>
                         </div>
                       </div>
-                      <div className="Rectangle-22 md-col-4">
-                        <div className="md-col-4">
+                      <div className="Rectangle-22 md-col-6">
+                        <div className="md-col-6">
                           <i className="fas fa-people-carry" />
                         </div>
-                        <div className="md-col-4 text-center">
+                        <div className="md-col-6 text-center">
                           <h1>Dự án</h1>
                           <h1>{propsEmployee.projects.length}</h1>
                         </div>

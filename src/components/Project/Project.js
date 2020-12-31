@@ -266,10 +266,10 @@ const Project = (propProject) => {
                                   {project.name}
                                 </td>
                                 <td className="tbody-start md-col-2" colSpan="2">
-                                  {format(project.start)}
+                                  {(project.start)}
                                 </td>
                                 <td className="tbody-finishDate md-col-2" colSpan="2">
-                                  {format(project.end)}
+                                  {(project.end)}
                                 </td>
                                 <td className="tbody-state  text-center md-col-2" colSpan="2">
                                   <span
@@ -422,13 +422,13 @@ const Project = (propProject) => {
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                  variant="primary"
+                  variant="primary btn_Delete_add"
                   onClick={onClickSend}
                 >
                   {titleModal.button}
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="secondary btn_Delete_add"
                   onClick={() => {
                     resetValues();
                     setModalCreate(false);
