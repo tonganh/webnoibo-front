@@ -8,13 +8,15 @@ import {
 import { connect } from 'react-redux';
 import ProTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+import { DatePicker, Space } from 'antd';
 import { getAllSalary } from '../../../store/salary/Action';
 import './index.css';
+import 'antd/dist/antd.css';
 import testAPI from '../../../untils/api';
-import ExportCSV from './ExportCSV';
-import Tablesalary from './TableSalary';
 
 const Salary = (propSalaries) => {
+  const dateFormatList = ['MM/YYYY'];
   const [salariesList, setSalariesList] = useState([]);
   useEffect(() => {
     testAPI.post('/salaries/admin').then((data) => {
@@ -26,13 +28,25 @@ const Salary = (propSalaries) => {
     setSalariesList(propSalaries.salariesReport);
   },
   [propSalaries.salariesReport]);
-  console.log('1231', salariesList);
+  const [searchTerm, setSearchTerm] = useState(['', '']);
   const handleChange = (e) => {
     console.log('handlechange', e.target.checked);
   };
   function splitBigNumber(string) {
     return string.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
+  function setStateTime(date, dateString) {
+    setSearchTerm(dateString);
+    console.log('serach Term', searchTerm);
+  }
+  useEffect(() => {
+    if (searchTerm === '') {
+      setSalariesList(propSalaries.salariesReport);
+    } else {
+      const result = propSalaries.salariesReport.filter((user) => new Date(user.month) === new Date(`01/${searchTerm}`));
+      setSalariesList(result);
+    }
+  }, [searchTerm]);
   return (
     <div className="projectPage">
       <div className="topProject">
@@ -79,13 +93,31 @@ const Salary = (propSalaries) => {
               </ul>
             </Col>
             <Col xs={10} className="maintainEmployee">
-              <div className="main-header d-flex justify-content-md-around">
-                <h2>Bảng lương nhân viên</h2>
-
-                <ExportCSV />
-
+              <div className="main-header d-flex justify-content-md-around flex-column">
+                <div className="main-header">
+                  <span>
+                    <Link to="/report" className="linkhRefReport">Báo cáo</Link>
+                  </span>
+                  <i className="penci-faicon fa fa-angle-right linkhRefReport " />
+                  <span>
+                    <Link to="/report/salary" className="linkhRefReport">Lương</Link>
+                  </span>
+                </div>
+                <div className="d-flex justify-content-md-around">
+                  <Space direction="vertical">
+                    <DatePicker onChange={setStateTime} picker="month" format={dateFormatList} />
+                  </Space>
+                  <ReactHTMLTableToExcel
+                    id="test-table-xls-button"
+                    className="btn btn-danger exportfile"
+                    table="table-to-xls"
+                    filename="test"
+                    sheet="tablexls"
+                    buttonText="Download as XLS"
+                  />
+                </div>
               </div>
-              <Table striped bordered hover responsive className="hihi">
+              <Table striped bordered hover responsive className="hihi" id="table-to-xls">
                 <thead className="thead-project row-header">
                   <tr>
                     <th rowSpan={2}>STT</th>
